@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: students
+    // Fields: name, fatherName, motherName, class, contact, address, createdAt
+    //
+    // Collection: admissions
+    // Fields: admissionNo, studentId, academicYear, totalFee, installmentType, installmentAmount, status, createdAt
+    //
+    // Collection: payments
+    // Fields: admissionId, installmentNumber, amount, paymentMode, transactionId, receiptNo, date, notes
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "shoaibtechno97@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function validString(field, min, max) {
+      return request.resource.data[field] is string && 
+             request.resource.data[field].size() >= min && 
+             request.resource.data[field].size() <= max;
+    }
+
+    // Students
+    match /students/{studentId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && 
+        hasOnlyAllowedFields(['name', 'fatherName', 'motherName', 'class', 'contact', 'address', 'createdAt']) &&
+        validString('name', 1, 100) &&
+        validString('fatherName', 1, 100) &&
+        validString('class', 1, 50);
+      allow delete: if isAdmin();
+    }
+
+    // Admissions
+    match /admissions/{admissionId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && 
+        hasOnlyAllowedFields(['admissionNo', 'studentId', 'academicYear', 'totalFee', 'installmentType', 'installmentAmount', 'status', 'createdAt']) &&
+        validString('admissionNo', 1, 50) &&
+        request.resource.data.totalFee is number &&
+        request.resource.data.totalFee >= 0;
+      allow delete: if isAdmin();
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && 
+        hasOnlyAllowedFields(['admissionId', 'installmentNumber', 'amount', 'paymentMode', 'transactionId', 'receiptNo', 'date', 'notes']) &&
+        request.resource.data.amount is number &&
+        request.resource.data.amount > 0;
+      allow delete: if isAdmin();
+    }
+
+    // Users (for roles)
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // Test connection
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

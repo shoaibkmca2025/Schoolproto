@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "Student": {
+      "title": "Student",
+      "description": "Basic information about a student.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Student's full name" },
+        "fatherName": { "type": "string", "description": "Father's name" },
+        "motherName": { "type": "string", "description": "Mother's name" },
+        "class": { "type": "string", "description": "Class/Grade" },
+        "contact": { "type": "string", "description": "Contact phone number" },
+        "address": { "type": "string", "description": "Residential address" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "fatherName", "class", "contact"]
+    },
+    "Admission": {
+      "title": "Admission",
+      "description": "Admission details including fee structure.",
+      "type": "object",
+      "properties": {
+        "admissionNo": { "type": "string", "description": "Unique admission number" },
+        "studentId": { "type": "string", "description": "Reference to Student ID" },
+        "academicYear": { "type": "string", "description": "e.g., 2023-2024" },
+        "totalFee": { "type": "number", "description": "Total annual fee" },
+        "installmentType": { "type": "string", "enum": ["Yearly", "Half-Yearly", "Quarterly", "Monthly"] },
+        "installmentAmount": { "type": "number", "description": "Calculated installment amount" },
+        "status": { "type": "string", "enum": ["Active", "Inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["admissionNo", "studentId", "academicYear", "totalFee", "installmentType"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Record of a fee payment.",
+      "type": "object",
+      "properties": {
+        "admissionId": { "type": "string", "description": "Reference to Admission ID" },
+        "installmentNumber": { "type": "number", "description": "Which installment this is" },
+        "amount": { "type": "number", "description": "Amount paid" },
+        "paymentMode": { "type": "string", "enum": ["Cash", "Online"] },
+        "transactionId": { "type": "string", "description": "Transaction ID for online payments" },
+        "receiptNo": { "type": "string", "description": "Generated receipt number" },
+        "date": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      },
+      "required": ["admissionId", "amount", "paymentMode", "date"]
+    }
+  },
+  "firestore": {
+    "/students": { "schema": "Student", "description": "Collection of students" },
+    "/admissions": { "schema": "Admission", "description": "Collection of admissions" },
+    "/payments": { "schema": "Payment", "description": "Collection of payments" }
+  }
+}
