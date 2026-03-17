@@ -19,6 +19,7 @@ import Admissions from './pages/Admissions';
 import Records from './pages/Records';
 import StudentProfile from './pages/StudentProfile';
 import ReceiptPreview from './pages/ReceiptPreview';
+import Reports from './pages/Reports';
 
 function Sidebar() {
   const location = useLocation();
@@ -119,7 +120,7 @@ export default function App() {
               <Route path="/records" element={<Records />} />
               <Route path="/student/:id" element={<StudentProfile />} />
               <Route path="/receipt/:paymentId" element={<ReceiptPreview />} />
-              <Route path="/reports" element={<div>Reports coming soon...</div>} />
+              <Route path="/reports" element={<Reports />} />
             </Routes>
           </div>
         </main>
