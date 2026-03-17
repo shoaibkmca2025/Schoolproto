@@ -107,15 +107,15 @@ export default function ReceiptPreview() {
         {/* Header */}
         <div className="flex justify-between items-start mb-12">
           <div className="flex gap-6">
-            <div className="size-24 bg-blue-600 rounded-2xl flex items-center justify-center text-white">
-              <School size={48} />
+            <div className="size-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+              <img src="/logo.jpeg" alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div>
               <h2 className="text-3xl font-bold text-slate-900">Yashodai Play School</h2>
               <p className="text-blue-600 font-bold mb-2">Nashik Branch</p>
               <p className="text-sm text-slate-500 max-w-[300px]">
-                123 Education Lane, Sharanpur Road, Nashik - 422002.<br />
-                Contact: +91 253 2345678
+                Narayani Bangla, Jay Ambe Nagar, behind K.K. Wagh College, Panchavati, Nashik.<br />
+                Contact: +91 7249462345
               </p>
             </div>
           </div>

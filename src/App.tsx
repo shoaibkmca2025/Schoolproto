@@ -37,8 +37,8 @@ function Sidebar() {
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-8">
-          <div className="size-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
-            <School size={24} />
+          <div className="size-12 rounded-xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
+            <img src="/logo.jpeg" alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>
             <h1 className="text-slate-900 text-base font-bold leading-tight">Yashodai Play School</h1>
