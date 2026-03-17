@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Printer, Share2, ArrowLeft, FileText, CreditCard, School, User } from 'lucide-react';
-import logo from '../assets/logo.jpeg';
+import { logoBase64 } from '../assets/logoData';
 import { useReactToPrint } from 'react-to-print';
 import { db, doc, getDoc, collection, query, where, getDocs } from '../firebase';
 import { Student, Admission, Payment } from '../types';
@@ -109,7 +109,7 @@ export default function ReceiptPreview() {
         <div className="flex justify-between items-start mb-12">
           <div className="flex gap-6">
             <div className="size-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-              <img src={logo} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div>
               <h2 className="text-3xl font-bold text-slate-900">Yashodai Play School</h2>

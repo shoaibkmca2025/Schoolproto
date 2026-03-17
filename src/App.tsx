@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { School, Mail, LayoutDashboard, UserPlus, Database, FileText, Search, Plus, Bell, ChevronRight, Receipt } from 'lucide-react';
-import logo from './assets/logo.jpeg';
+import { logoBase64 } from './assets/logoData';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -27,7 +27,7 @@ function Sidebar() {
       <div className="p-6">
         <div className="flex items-center gap-3 mb-8">
           <div className="size-12 rounded-xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
-            <img src={logo} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>
             <h1 className="text-slate-900 text-base font-bold leading-tight">Yashodai Play School</h1>
