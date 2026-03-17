@@ -52,6 +52,18 @@ export default function StudentProfile() {
   const [submitting, setSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // Auto-suggest next unpaid installment
+  useEffect(() => {
+    if (payments.length >= 0) {
+      const paidNums = payments.map(p => p.installmentNumber);
+      let next = 1;
+      while (paidNums.includes(next)) {
+        next++;
+      }
+      setPaymentForm(prev => ({ ...prev, installmentNumber: next }));
+    }
+  }, [payments]);
+
   const handleDelete = async () => {
     if (!id || !admission) return;
     
@@ -114,6 +126,14 @@ export default function StudentProfile() {
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!admission) return;
+
+    // Validation: Check if installment is already paid
+    const isPaid = payments.some(p => p.installmentNumber === Number(paymentForm.installmentNumber));
+    if (isPaid) {
+      alert(`Installment #${paymentForm.installmentNumber} is already paid!`);
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -359,9 +379,12 @@ export default function StudentProfile() {
                   value={paymentForm.installmentNumber}
                   onChange={e => setPaymentForm({...paymentForm, installmentNumber: Number(e.target.value)})}
                 >
-                  {[...Array(12)].map((_, i) => (
-                    <option key={i+1} value={i+1}>Installment #{i+1}</option>
-                  ))}
+                  {[...Array(12)].map((_, i) => {
+                    const num = i + 1;
+                    const isPaid = payments.some(p => p.installmentNumber === num);
+                    if (isPaid) return null;
+                    return <option key={num} value={num}>Installment #{num}</option>;
+                  })}
                 </select>
               </div>
               <div className="space-y-2">
