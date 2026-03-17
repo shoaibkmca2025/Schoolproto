@@ -10,7 +10,9 @@ import {
   Calendar,
   CreditCard,
   Upload,
-  CheckCircle2
+  CheckCircle2,
+  UserPlus,
+  Trash2
 } from 'lucide-react';
 import { 
   db, 
@@ -23,6 +25,7 @@ import {
   orderBy, 
   addDoc, 
   onSnapshot,
+  deleteDoc,
   handleFirestoreError,
   OperationType
 } from '../firebase';
@@ -47,6 +50,32 @@ export default function StudentProfile() {
     notes: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDelete = async () => {
+    if (!id || !admission) return;
+    
+    setSubmitting(true);
+    try {
+      // 1. Delete Payments
+      const pq = query(collection(db, 'payments'), where('admissionId', '==', admission.id));
+      const pSnap = await getDocs(pq);
+      const deletePromises = pSnap.docs.map(d => deleteDoc(doc(db, 'payments', d.id)));
+      await Promise.all(deletePromises);
+
+      // 2. Delete Admission
+      await deleteDoc(doc(db, 'admissions', admission.id!));
+
+      // 3. Delete Student
+      await deleteDoc(doc(db, 'students', id));
+
+      navigate('/records');
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, 'students');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -162,6 +191,13 @@ export default function StudentProfile() {
 
         <div className="flex flex-col gap-3 w-full md:w-auto">
           <button 
+            onClick={() => navigate(`/edit-student/${id}`)}
+            className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
+          >
+            <UserPlus size={18} />
+            Edit Profile
+          </button>
+          <button 
             onClick={() => {
               if (payments.length > 0) {
                 navigate(`/receipt/${payments[0].id}`);
@@ -190,8 +226,48 @@ export default function StudentProfile() {
             <Share2 size={18} />
             Share Details
           </button>
+          <button 
+            onClick={() => setShowDeleteModal(true)}
+            disabled={submitting}
+            className="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
+          >
+            <Trash2 size={18} />
+            Delete Record
+          </button>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 text-center mb-2">Delete Student Record?</h3>
+            <p className="text-slate-500 text-center mb-8">
+              This action cannot be undone. All admission details and payment history for <strong>{student?.name}</strong> will be permanently deleted.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  handleDelete();
+                }}
+                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+              >
+                Delete Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Payment History */}

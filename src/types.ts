@@ -17,7 +17,7 @@ export interface Admission {
   totalFee: number;
   installmentType: 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
   installmentAmount: number;
-  status: 'Active' | 'Inactive';
+  status: 'Active' | 'Inactive' | 'Completed';
   createdAt: string;
 }
 

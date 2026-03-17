@@ -177,9 +177,9 @@ export default function Dashboard() {
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert(`Options for ${student.name}: Edit, Delete, or View History.`);
+                          navigate(`/edit-student/${student.id}`);
                         }}
-                        className="text-slate-400 hover:text-blue-600"
+                        className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-lg transition-all"
                       >
                         <MoreVertical size={18} />
                       </button>
