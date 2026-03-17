@@ -200,14 +200,14 @@ export default function Admissions() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-6 py-2.5 rounded-none font-bold text-slate-600 hover:bg-slate-200 transition-all"
+            className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200 transition-all"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-none font-bold transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {loading ? 'Saving...' : (
               <>

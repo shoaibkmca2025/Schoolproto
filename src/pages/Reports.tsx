@@ -130,11 +130,11 @@ export default function Reports() {
           <p className="text-slate-500">Overview of school admissions and fee collections</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white border border-slate-200 px-4 py-2 rounded-none text-sm font-bold text-slate-600 flex items-center gap-2 hover:bg-slate-50">
+          <button className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-2 hover:bg-slate-50">
             <Filter size={18} />
             Filter
           </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-none text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
             <Download size={18} />
             Export PDF
           </button>
@@ -236,7 +236,7 @@ export default function Reports() {
                   tickFormatter={(value) => `₹${value/1000}k`}
                 />
                 <Tooltip 
-                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   formatter={(value: any) => [`₹${value.toLocaleString()}`, 'Collected']}
                 />
                 <Area 
@@ -275,7 +275,7 @@ export default function Reports() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   formatter={(value: any) => [`₹${value.toLocaleString()}`, 'Total']}
                 />
                 <Legend verticalAlign="bottom" height={36}/>
@@ -307,13 +307,13 @@ export default function Reports() {
                   tick={{fill: '#64748b', fontSize: 12}}
                 />
                 <Tooltip 
-                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   cursor={{fill: '#f8fafc'}}
                 />
                 <Bar 
                   dataKey="students" 
                   fill="#2563eb" 
-                  radius={[0, 0, 0, 0]} 
+                  radius={[6, 6, 0, 0]} 
                   barSize={60}
                 />
               </BarChart>

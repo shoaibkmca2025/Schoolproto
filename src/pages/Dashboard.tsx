@@ -179,7 +179,7 @@ export default function Dashboard() {
                           e.stopPropagation();
                           navigate(`/edit-student/${student.id}`);
                         }}
-                        className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-none transition-all"
+                        className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-xl transition-all"
                       >
                         <MoreVertical size={18} />
                       </button>
@@ -204,7 +204,7 @@ export default function Dashboard() {
           </div>
           <button 
             onClick={() => navigate('/records')}
-            className="ml-auto p-2 hover:bg-blue-100 rounded-none text-blue-600"
+            className="ml-auto p-2 hover:bg-blue-100 rounded-xl text-blue-600"
           >
             <ChevronRight size={20} />
           </button>
@@ -219,7 +219,7 @@ export default function Dashboard() {
           </div>
           <button 
             onClick={() => alert('Reminder feature: This would send WhatsApp/SMS notifications to parents with pending fees.')}
-            className="ml-auto p-2 hover:bg-slate-800 rounded-none text-slate-400"
+            className="ml-auto p-2 hover:bg-slate-800 rounded-xl text-slate-400"
           >
             <ChevronRight size={20} />
           </button>

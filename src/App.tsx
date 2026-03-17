@@ -39,7 +39,7 @@ function Sidebar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-none font-medium transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
                 location.pathname === item.path
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-600 hover:bg-slate-100'
@@ -83,12 +83,12 @@ function Header() {
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/admissions')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-none font-bold text-sm transition-all flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
         >
           <Plus size={18} />
           New Admission
         </button>
-        <button className="p-2 rounded-none text-slate-500 hover:bg-slate-100">
+        <button className="p-2 rounded-xl text-slate-500 hover:bg-slate-100">
           <Bell size={20} />
         </button>
       </div>

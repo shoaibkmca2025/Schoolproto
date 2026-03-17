@@ -161,7 +161,7 @@ export default function EditStudent() {
         <button
           onClick={() => setShowDeleteModal(true)}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-none font-bold transition-all"
+          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl font-bold transition-all"
         >
           <Trash2 size={18} />
           Delete Record
@@ -182,7 +182,7 @@ export default function EditStudent() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-none font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
               >
                 Cancel
               </button>
@@ -191,7 +191,7 @@ export default function EditStudent() {
                   setShowDeleteModal(false);
                   handleDelete();
                 }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-none font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
               >
                 Delete Now
               </button>
@@ -333,14 +333,14 @@ export default function EditStudent() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-6 py-2.5 rounded-none font-bold text-slate-600 hover:bg-slate-200 transition-all"
+            className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200 transition-all"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-none font-bold transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? 'Saving...' : (
               <>

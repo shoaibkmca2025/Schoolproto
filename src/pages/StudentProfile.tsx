@@ -192,7 +192,7 @@ export default function StudentProfile() {
         <div className="flex flex-col gap-3 w-full md:w-auto">
           <button 
             onClick={() => navigate(`/edit-student/${id}`)}
-            className="bg-slate-900 text-white px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
+            className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
           >
             <UserPlus size={18} />
             Edit Profile
@@ -206,7 +206,7 @@ export default function StudentProfile() {
                 document.getElementById('payment-form')?.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="bg-blue-600 text-white px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all"
+            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all"
           >
             <FileText size={18} />
             Fee Receipt
@@ -221,7 +221,7 @@ export default function StudentProfile() {
                 alert('Details copied to clipboard!');
               }
             }}
-            className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
           >
             <Share2 size={18} />
             Share Details
@@ -229,7 +229,7 @@ export default function StudentProfile() {
           <button 
             onClick={() => setShowDeleteModal(true)}
             disabled={submitting}
-            className="bg-red-50 text-red-600 px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
+            className="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
           >
             <Trash2 size={18} />
             Delete Record
@@ -251,7 +251,7 @@ export default function StudentProfile() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-none font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
               >
                 Cancel
               </button>
@@ -260,7 +260,7 @@ export default function StudentProfile() {
                   setShowDeleteModal(false);
                   handleDelete();
                 }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-none font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
               >
                 Delete Now
               </button>
@@ -300,7 +300,7 @@ export default function StudentProfile() {
                   <p className="text-lg font-bold text-slate-900">₹{p.amount.toLocaleString()}</p>
                   <button 
                     onClick={() => navigate(`/receipt/${p.id}`)}
-                    className="mt-3 w-full py-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-xs font-bold text-blue-600 transition-all"
+                    className="mt-3 w-full py-2 bg-slate-50 hover:bg-slate-100 rounded-xl text-xs font-bold text-blue-600 transition-all"
                   >
                     View Receipt
                   </button>
@@ -370,7 +370,7 @@ export default function StudentProfile() {
                   <button
                     type="button"
                     onClick={() => setPaymentForm({...paymentForm, paymentMode: 'Cash'})}
-                    className={`flex-1 py-2.5 rounded-none font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Cash' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
+                    className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Cash' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
                   >
                     <Banknote size={18} />
                     Cash
@@ -378,7 +378,7 @@ export default function StudentProfile() {
                   <button
                     type="button"
                     onClick={() => setPaymentForm({...paymentForm, paymentMode: 'Online'})}
-                    className={`flex-1 py-2.5 rounded-none font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Online' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
+                    className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Online' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
                   >
                     <CreditCard size={18} />
                     Online
@@ -431,14 +431,14 @@ export default function StudentProfile() {
                     transactionId: '',
                     notes: ''
                   })}
-                  className="px-6 py-2.5 rounded-none font-bold text-slate-600 hover:bg-slate-100"
+                  className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-none font-bold transition-all disabled:opacity-50"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all disabled:opacity-50"
                 >
                   {submitting ? 'Recording...' : 'Record Payment'}
                 </button>

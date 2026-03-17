@@ -80,7 +80,7 @@ export default function ReceiptPreview() {
         <div className="flex gap-3">
           <button 
             onClick={() => handlePrint()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-none font-bold flex items-center gap-2 hover:bg-blue-700"
+            className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700"
           >
             <Printer size={18} />
             Print Receipt
@@ -95,7 +95,7 @@ export default function ReceiptPreview() {
                 alert('Receipt details copied to clipboard!');
               }
             }}
-            className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-none font-bold flex items-center gap-2 hover:bg-slate-50"
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50"
           >
             <Share2 size={18} />
             Share
