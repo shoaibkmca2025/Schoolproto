@@ -158,9 +158,9 @@ export default function StudentProfile() {
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8 items-start">
+      <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8 items-start">
         <div className="relative">
-          <div className="size-32 rounded-2xl bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}')` }}></div>
+          <div className="size-32 rounded-none bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}')` }}></div>
           <button className="absolute -bottom-2 -right-2 size-8 rounded-full bg-blue-600 text-white flex items-center justify-center border-4 border-white">
             <PlusCircle size={14} />
           </button>
@@ -174,15 +174,15 @@ export default function StudentProfile() {
           <p className="text-slate-500 font-medium">Admission No: <span className="text-slate-900">{admission.admissionNo}</span></p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="p-4 bg-slate-50 rounded-none border border-slate-100">
               <p className="text-xs text-slate-500 uppercase font-bold mb-1">Total Fee</p>
               <p className="text-xl font-bold text-slate-900">₹{admission.totalFee.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+            <div className="p-4 bg-blue-50 rounded-none border border-blue-100">
               <p className="text-xs text-blue-600 uppercase font-bold mb-1">Paid Amount</p>
               <p className="text-xl font-bold text-blue-700">₹{totalPaid.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
+            <div className="p-4 bg-amber-50 rounded-none border border-amber-100">
               <p className="text-xs text-amber-600 uppercase font-bold mb-1">Balance Due</p>
               <p className="text-xl font-bold text-amber-700">₹{balance.toLocaleString()}</p>
             </div>
@@ -192,7 +192,7 @@ export default function StudentProfile() {
         <div className="flex flex-col gap-3 w-full md:w-auto">
           <button 
             onClick={() => navigate(`/edit-student/${id}`)}
-            className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
+            className="bg-slate-900 text-white px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
           >
             <UserPlus size={18} />
             Edit Profile
@@ -206,7 +206,7 @@ export default function StudentProfile() {
                 document.getElementById('payment-form')?.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all"
+            className="bg-blue-600 text-white px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all"
           >
             <FileText size={18} />
             Fee Receipt
@@ -221,7 +221,7 @@ export default function StudentProfile() {
                 alert('Details copied to clipboard!');
               }
             }}
-            className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
           >
             <Share2 size={18} />
             Share Details
@@ -229,7 +229,7 @@ export default function StudentProfile() {
           <button 
             onClick={() => setShowDeleteModal(true)}
             disabled={submitting}
-            className="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
+            className="bg-red-50 text-red-600 px-6 py-3 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
           >
             <Trash2 size={18} />
             Delete Record
@@ -240,7 +240,7 @@ export default function StudentProfile() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-none max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 size={32} />
             </div>
@@ -251,7 +251,7 @@ export default function StudentProfile() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                className="flex-1 px-6 py-3 rounded-none font-bold text-slate-600 hover:bg-slate-100 transition-all"
               >
                 Cancel
               </button>
@@ -260,7 +260,7 @@ export default function StudentProfile() {
                   setShowDeleteModal(false);
                   handleDelete();
                 }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-none font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
               >
                 Delete Now
               </button>
@@ -281,12 +281,12 @@ export default function StudentProfile() {
           
           <div className="space-y-4">
             {payments.length === 0 ? (
-              <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500">
+              <div className="p-8 text-center bg-white rounded-none border border-slate-200 text-slate-500">
                 No payments recorded yet.
               </div>
             ) : (
               payments.map((p, idx) => (
-                <div key={p.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div key={p.id} className="bg-white p-5 rounded-none border border-slate-200 shadow-sm relative overflow-hidden">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h4 className="font-bold text-slate-900">Installment #{p.installmentNumber}</h4>
@@ -326,7 +326,7 @@ export default function StudentProfile() {
             Enter New Payment
           </h2>
           
-          <form id="payment-form" onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+          <form id="payment-form" onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-none border border-slate-200 shadow-sm space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Amount (₹)</label>
@@ -335,7 +335,7 @@ export default function StudentProfile() {
                   <input
                     required
                     type="number"
-                    className="w-full pl-8 rounded-xl border-slate-200 focus:ring-blue-600/50"
+                    className="w-full pl-8 rounded-none border-slate-200 focus:ring-blue-600/50"
                     placeholder="Enter amount"
                     value={paymentForm.amount}
                     onChange={e => setPaymentForm({...paymentForm, amount: Number(e.target.value)})}
@@ -347,7 +347,7 @@ export default function StudentProfile() {
                 <input
                   required
                   type="date"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={paymentForm.date}
                   onChange={e => setPaymentForm({...paymentForm, date: e.target.value})}
                 />
@@ -355,7 +355,7 @@ export default function StudentProfile() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Installment No.</label>
                 <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={paymentForm.installmentNumber}
                   onChange={e => setPaymentForm({...paymentForm, installmentNumber: Number(e.target.value)})}
                 >
@@ -370,7 +370,7 @@ export default function StudentProfile() {
                   <button
                     type="button"
                     onClick={() => setPaymentForm({...paymentForm, paymentMode: 'Cash'})}
-                    className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Cash' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
+                    className={`flex-1 py-2.5 rounded-none font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Cash' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
                   >
                     <Banknote size={18} />
                     Cash
@@ -378,7 +378,7 @@ export default function StudentProfile() {
                   <button
                     type="button"
                     onClick={() => setPaymentForm({...paymentForm, paymentMode: 'Online'})}
-                    className={`flex-1 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Online' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
+                    className={`flex-1 py-2.5 rounded-none font-bold flex items-center justify-center gap-2 border transition-all ${paymentForm.paymentMode === 'Online' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-500'}`}
                   >
                     <CreditCard size={18} />
                     Online
@@ -391,7 +391,7 @@ export default function StudentProfile() {
               <label className="text-sm font-medium text-slate-700">Transaction ID / Reference</label>
               <input
                 type="text"
-                className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                 placeholder="e.g. TXN123456789"
                 value={paymentForm.transactionId}
                 onChange={e => setPaymentForm({...paymentForm, transactionId: e.target.value})}
@@ -400,7 +400,7 @@ export default function StudentProfile() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Upload Transaction Screenshot</label>
-              <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 transition-all cursor-pointer">
+              <div className="border-2 border-dashed border-slate-200 rounded-none p-8 text-center hover:border-blue-400 transition-all cursor-pointer">
                 <Upload className="mx-auto text-slate-400 mb-2" size={32} />
                 <p className="text-sm font-bold text-slate-600">Click to upload or drag and drop</p>
                 <p className="text-xs text-slate-400">PNG, JPG or PDF (MAX. 2MB)</p>
@@ -410,7 +410,7 @@ export default function StudentProfile() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Remarks (Optional)</label>
               <textarea
-                className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                 placeholder="Any additional notes..."
                 rows={3}
                 value={paymentForm.notes}
@@ -431,14 +431,14 @@ export default function StudentProfile() {
                     transactionId: '',
                     notes: ''
                   })}
-                  className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100"
+                  className="px-6 py-2.5 rounded-none font-bold text-slate-600 hover:bg-slate-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all disabled:opacity-50"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-none font-bold transition-all disabled:opacity-50"
                 >
                   {submitting ? 'Recording...' : 'Record Payment'}
                 </button>

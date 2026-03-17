@@ -32,7 +32,7 @@ export default function Records() {
         <div className="relative max-w-md w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input
-            className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50"
+            className="w-full bg-white border border-slate-200 rounded-none py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50"
             placeholder="Search by name or phone..."
             type="text"
             value={searchTerm}
@@ -41,7 +41,7 @@ export default function Records() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
@@ -68,7 +68,7 @@ export default function Records() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                        <div className="size-10 rounded-none bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
                           {s.name.charAt(0)}
                         </div>
                         <div>
@@ -88,7 +88,7 @@ export default function Records() {
                             e.stopPropagation();
                             navigate(`/edit-student/${s.id}`);
                           }}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-none transition-all"
                           title="Edit Student"
                         >
                           <MoreVertical size={18} />

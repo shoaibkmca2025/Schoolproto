@@ -26,7 +26,7 @@ function Sidebar() {
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-8">
-          <div className="size-12 rounded-xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
+          <div className="size-12 rounded-none overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
             <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>
@@ -39,7 +39,7 @@ function Sidebar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-none font-medium transition-colors ${
                 location.pathname === item.path
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-600 hover:bg-slate-100'
@@ -74,7 +74,7 @@ function Header() {
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input
-            className="w-full bg-slate-100 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 text-slate-900"
+            className="w-full bg-slate-100 border-none rounded-none py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 text-slate-900"
             placeholder="Find students by Name or Admission No."
             type="text"
           />
@@ -83,12 +83,12 @@ function Header() {
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/admissions')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-none font-bold text-sm transition-all flex items-center gap-2"
         >
           <Plus size={18} />
           New Admission
         </button>
-        <button className="p-2 rounded-xl text-slate-500 hover:bg-slate-100">
+        <button className="p-2 rounded-none text-slate-500 hover:bg-slate-100">
           <Bell size={20} />
         </button>
       </div>

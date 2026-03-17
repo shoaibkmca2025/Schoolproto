@@ -161,7 +161,7 @@ export default function EditStudent() {
         <button
           onClick={() => setShowDeleteModal(true)}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl font-bold transition-all"
+          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-none font-bold transition-all"
         >
           <Trash2 size={18} />
           Delete Record
@@ -171,7 +171,7 @@ export default function EditStudent() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-none max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 size={32} />
             </div>
@@ -182,7 +182,7 @@ export default function EditStudent() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                className="flex-1 px-6 py-3 rounded-none font-bold text-slate-600 hover:bg-slate-100 transition-all"
               >
                 Cancel
               </button>
@@ -191,7 +191,7 @@ export default function EditStudent() {
                   setShowDeleteModal(false);
                   handleDelete();
                 }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-none font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
               >
                 Delete Now
               </button>
@@ -200,7 +200,7 @@ export default function EditStudent() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-8 space-y-8">
           {/* Student Details */}
           <section>
@@ -214,7 +214,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
                 />
@@ -222,7 +222,7 @@ export default function EditStudent() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Class</label>
                 <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.class}
                   onChange={e => setFormData({...formData, class: e.target.value})}
                 >
@@ -237,7 +237,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.fatherName}
                   onChange={e => setFormData({...formData, fatherName: e.target.value})}
                 />
@@ -247,7 +247,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.motherName}
                   onChange={e => setFormData({...formData, motherName: e.target.value})}
                 />
@@ -257,7 +257,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="tel"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.contact}
                   onChange={e => setFormData({...formData, contact: e.target.value})}
                 />
@@ -267,7 +267,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.academicYear}
                   onChange={e => setFormData({...formData, academicYear: e.target.value})}
                 />
@@ -276,7 +276,7 @@ export default function EditStudent() {
             <div className="mt-6 space-y-2">
               <label className="text-sm font-medium text-slate-700">Address</label>
               <textarea
-                className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                 rows={3}
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
@@ -295,7 +295,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="number"
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.totalFee}
                   onChange={e => setFormData({...formData, totalFee: Number(e.target.value)})}
                 />
@@ -303,7 +303,7 @@ export default function EditStudent() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Installment Plan</label>
                 <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.installmentType}
                   onChange={e => setFormData({...formData, installmentType: e.target.value as Admission['installmentType']})}
                 >
@@ -316,7 +316,7 @@ export default function EditStudent() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Admission Status</label>
                 <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
                   value={formData.status}
                   onChange={e => setFormData({...formData, status: e.target.value as Admission['status']})}
                 >
@@ -333,14 +333,14 @@ export default function EditStudent() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200 transition-all"
+            className="px-6 py-2.5 rounded-none font-bold text-slate-600 hover:bg-slate-200 transition-all"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-none font-bold transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? 'Saving...' : (
               <>

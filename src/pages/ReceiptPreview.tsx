@@ -80,7 +80,7 @@ export default function ReceiptPreview() {
         <div className="flex gap-3">
           <button 
             onClick={() => handlePrint()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700"
+            className="bg-blue-600 text-white px-6 py-2 rounded-none font-bold flex items-center gap-2 hover:bg-blue-700"
           >
             <Printer size={18} />
             Print Receipt
@@ -95,7 +95,7 @@ export default function ReceiptPreview() {
                 alert('Receipt details copied to clipboard!');
               }
             }}
-            className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50"
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-none font-bold flex items-center gap-2 hover:bg-slate-50"
           >
             <Share2 size={18} />
             Share
@@ -104,11 +104,11 @@ export default function ReceiptPreview() {
       </div>
 
       {/* Printable Area */}
-      <div className="bg-white p-12 rounded-2xl shadow-lg border border-slate-200 min-h-[1000px]" ref={componentRef}>
+      <div className="bg-white p-12 rounded-none shadow-lg border border-slate-200 min-h-[1000px]" ref={componentRef}>
         {/* Header */}
         <div className="flex justify-between items-start mb-12">
           <div className="flex gap-6">
-            <div className="size-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+            <div className="size-24 rounded-none overflow-hidden border border-slate-100 shadow-sm">
               <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div>
@@ -120,7 +120,7 @@ export default function ReceiptPreview() {
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-right min-w-[200px]">
+          <div className="bg-slate-50 p-6 rounded-none border border-slate-100 text-right min-w-[200px]">
             <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Receipt No</p>
             <p className="text-lg font-bold text-slate-900 mb-4">#{payment.receiptNo}</p>
             <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Date</p>
@@ -136,7 +136,7 @@ export default function ReceiptPreview() {
             <User size={14} />
             Student Details
           </h3>
-          <div className="bg-slate-50 p-8 rounded-2xl grid grid-cols-2 gap-y-6 gap-x-12">
+          <div className="bg-slate-50 p-8 rounded-none grid grid-cols-2 gap-y-6 gap-x-12">
             <div className="flex justify-between border-b border-slate-200 pb-2">
               <span className="text-sm text-slate-500">Student Name</span>
               <span className="text-sm font-bold text-slate-900">{student.name}</span>
@@ -170,7 +170,7 @@ export default function ReceiptPreview() {
             <CreditCard size={14} />
             Payment Details
           </h3>
-          <div className="overflow-hidden rounded-2xl border border-slate-200">
+          <div className="overflow-hidden rounded-none border border-slate-200">
             <table className="w-full text-left">
               <thead className="bg-slate-900 text-white text-xs uppercase tracking-wider">
                 <tr>
@@ -197,7 +197,7 @@ export default function ReceiptPreview() {
 
         {/* Summary */}
         <div className="flex justify-between items-start gap-12 mb-12">
-          <div className="flex-1 bg-blue-50 p-8 rounded-2xl border border-blue-100">
+          <div className="flex-1 bg-blue-50 p-8 rounded-none border border-blue-100">
             <p className="text-[10px] text-blue-600 uppercase font-bold tracking-wider mb-2">Amount in Words</p>
             <p className="text-lg font-bold text-slate-900 italic">Rupees {numberToWords(payment.amount)}</p>
           </div>
@@ -210,7 +210,7 @@ export default function ReceiptPreview() {
               <span className="text-slate-500">Paid to Date (incl. this)</span>
               <span className="font-bold text-slate-900">₹ {totalPaidToDate.toLocaleString()}.00</span>
             </div>
-            <div className="bg-blue-600 p-6 rounded-2xl text-white flex justify-between items-center">
+            <div className="bg-blue-600 p-6 rounded-none text-white flex justify-between items-center">
               <span className="text-xs font-bold uppercase">Remaining Balance</span>
               <div className="text-right">
                 <span className="text-2xl font-bold">₹ {remainingBalance.toLocaleString()}.00</span>

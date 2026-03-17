@@ -130,11 +130,11 @@ export default function Reports() {
           <p className="text-slate-500">Overview of school admissions and fee collections</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-2 hover:bg-slate-50">
+          <button className="bg-white border border-slate-200 px-4 py-2 rounded-none text-sm font-bold text-slate-600 flex items-center gap-2 hover:bg-slate-50">
             <Filter size={18} />
             Filter
           </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-none text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
             <Download size={18} />
             Export PDF
           </button>
@@ -143,9 +143,9 @@ export default function Reports() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div className="size-12 rounded-none bg-blue-50 text-blue-600 flex items-center justify-center">
               <Users size={24} />
             </div>
             <div>
@@ -159,9 +159,9 @@ export default function Reports() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="size-12 rounded-none bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Wallet size={24} />
             </div>
             <div>
@@ -172,9 +172,9 @@ export default function Reports() {
           <p className="text-xs text-slate-400">Total revenue received to date</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div className="size-12 rounded-none bg-amber-50 text-amber-600 flex items-center justify-center">
               <CreditCard size={24} />
             </div>
             <div>
@@ -185,9 +185,9 @@ export default function Reports() {
           <p className="text-xs text-slate-400">Outstanding balance from admissions</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+            <div className="size-12 rounded-none bg-slate-100 text-slate-600 flex items-center justify-center">
               <Calendar size={24} />
             </div>
             <div>
@@ -201,13 +201,13 @@ export default function Reports() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Monthly Collection Chart */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <h3 className="font-bold text-slate-900 flex items-center gap-2">
               <FileBarChart size={20} className="text-blue-600" />
               Monthly Collection Trend
             </h3>
-            <select className="text-xs border-slate-200 rounded-lg">
+            <select className="text-xs border-slate-200 rounded-none">
               <option>Last 6 Months</option>
               <option>Last Year</option>
             </select>
@@ -236,7 +236,7 @@ export default function Reports() {
                   tickFormatter={(value) => `₹${value/1000}k`}
                 />
                 <Tooltip 
-                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   formatter={(value: any) => [`₹${value.toLocaleString()}`, 'Collected']}
                 />
                 <Area 
@@ -253,7 +253,7 @@ export default function Reports() {
         </div>
 
         {/* Payment Mode Distribution */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm">
           <h3 className="font-bold text-slate-900 mb-8 flex items-center gap-2">
             <CreditCard size={20} className="text-blue-600" />
             Payment Mode Distribution
@@ -275,7 +275,7 @@ export default function Reports() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   formatter={(value: any) => [`₹${value.toLocaleString()}`, 'Total']}
                 />
                 <Legend verticalAlign="bottom" height={36}/>
@@ -285,7 +285,7 @@ export default function Reports() {
         </div>
 
         {/* Class-wise Distribution */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm lg:col-span-2">
           <h3 className="font-bold text-slate-900 mb-8 flex items-center gap-2">
             <Users size={20} className="text-blue-600" />
             Class-wise Student Enrollment
@@ -307,13 +307,13 @@ export default function Reports() {
                   tick={{fill: '#64748b', fontSize: 12}}
                 />
                 <Tooltip 
-                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
+                  contentStyle={{borderRadius: '0px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
                   cursor={{fill: '#f8fafc'}}
                 />
                 <Bar 
                   dataKey="students" 
                   fill="#2563eb" 
-                  radius={[6, 6, 0, 0]} 
+                  radius={[0, 0, 0, 0]} 
                   barSize={60}
                 />
               </BarChart>
