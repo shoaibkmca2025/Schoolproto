@@ -39,40 +39,22 @@ service cloud.firestore {
 
     // Students
     match /students/{studentId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && 
-        hasOnlyAllowedFields(['name', 'fatherName', 'motherName', 'class', 'contact', 'address', 'createdAt']) &&
-        validString('name', 1, 100) &&
-        validString('fatherName', 1, 100) &&
-        validString('class', 1, 50);
-      allow delete: if isAdmin();
+      allow read, write: if true;
     }
 
     // Admissions
     match /admissions/{admissionId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && 
-        hasOnlyAllowedFields(['admissionNo', 'studentId', 'academicYear', 'totalFee', 'installmentType', 'installmentAmount', 'status', 'createdAt']) &&
-        validString('admissionNo', 1, 50) &&
-        request.resource.data.totalFee is number &&
-        request.resource.data.totalFee >= 0;
-      allow delete: if isAdmin();
+      allow read, write: if true;
     }
 
     // Payments
     match /payments/{paymentId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && 
-        hasOnlyAllowedFields(['admissionId', 'installmentNumber', 'amount', 'paymentMode', 'transactionId', 'receiptNo', 'date', 'notes']) &&
-        request.resource.data.amount is number &&
-        request.resource.data.amount > 0;
-      allow delete: if isAdmin();
+      allow read, write: if true;
     }
 
     // Users (for roles)
     match /users/{userId} {
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow write: if isAdmin();
+      allow read, write: if true;
     }
     
     // Test connection

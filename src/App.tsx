@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -8,14 +7,11 @@ import {
   Search, 
   Plus, 
   Bell, 
-  LogOut,
   School,
   ChevronRight,
   Receipt,
   Mail
 } from 'lucide-react';
-import { auth, googleProvider, signInWithPopup, signOut } from './firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -67,19 +63,12 @@ function Sidebar() {
       <div className="mt-auto p-6 border-t border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-slate-200 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${auth.currentUser?.email}')` }}></div>
+            <div className="size-10 rounded-full bg-slate-200 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=admin')` }}></div>
             <div className="flex flex-col">
-              <p className="text-sm font-bold truncate max-w-[120px]">{auth.currentUser?.displayName || 'Admin Staff'}</p>
-              <p className="text-xs text-slate-500">School Admin</p>
+              <p className="text-sm font-bold truncate max-w-[120px]">School Admin</p>
+              <p className="text-xs text-slate-500">Public Access</p>
             </div>
           </div>
-          <button 
-            onClick={() => signOut(auth)}
-            className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
-            title="Logout"
-          >
-            <LogOut size={20} />
-          </button>
         </div>
       </div>
     </aside>
@@ -116,59 +105,7 @@ function Header() {
   );
 }
 
-function Login() {
-  const handleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error('Login failed', error);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-200 max-w-md w-full text-center">
-        <div className="size-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white mx-auto mb-6">
-          <School size={32} />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Yashodai Play School</h1>
-        <p className="text-slate-500 mb-8">Management Portal - Please sign in to continue</p>
-        <button
-          onClick={handleLogin}
-          className="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-3"
-        >
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-          Sign in with Google
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Login />;
-  }
-
   return (
     <Router>
       <div className="flex min-h-screen bg-slate-50">
