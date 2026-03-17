@@ -82,7 +82,13 @@ export default function Records() {
                     <td className="px-6 py-4 text-sm text-slate-600">{s.contact}</td>
                     <td className="px-6 py-4 text-sm text-slate-600">{format(new Date(s.createdAt), 'dd MMM yyyy')}</td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-2 text-slate-400 hover:text-blue-600">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert(`Options for ${s.name}: Edit or Delete.`);
+                        }}
+                        className="p-2 text-slate-400 hover:text-blue-600"
+                      >
                         <MoreVertical size={18} />
                       </button>
                     </td>

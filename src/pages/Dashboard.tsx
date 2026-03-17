@@ -174,7 +174,13 @@ export default function Dashboard() {
                       {student.createdAt ? format(new Date(student.createdAt), 'dd MMM yyyy') : '-'}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="text-slate-400 hover:text-blue-600">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert(`Options for ${student.name}: Edit, Delete, or View History.`);
+                        }}
+                        className="text-slate-400 hover:text-blue-600"
+                      >
                         <MoreVertical size={18} />
                       </button>
                     </td>
@@ -211,7 +217,10 @@ export default function Dashboard() {
             <h4 className="font-bold text-white">Send Reminders</h4>
             <p className="text-sm text-slate-400">Notify parents about pending fees via SMS/Email.</p>
           </div>
-          <button className="ml-auto p-2 hover:bg-slate-800 rounded-lg text-slate-400">
+          <button 
+            onClick={() => alert('Reminder feature: This would send WhatsApp/SMS notifications to parents with pending fees.')}
+            className="ml-auto p-2 hover:bg-slate-800 rounded-lg text-slate-400"
+          >
             <ChevronRight size={20} />
           </button>
         </div>

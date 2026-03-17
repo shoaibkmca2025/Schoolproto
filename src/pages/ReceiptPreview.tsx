@@ -84,7 +84,18 @@ export default function ReceiptPreview() {
             <Printer size={18} />
             Print Receipt
           </button>
-          <button className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50">
+          <button 
+            onClick={() => {
+              const text = `Fee Receipt #${payment.receiptNo}\nStudent: ${student.name}\nAmount: ₹${payment.amount}\nBalance: ₹${remainingBalance}`;
+              if (navigator.share) {
+                navigator.share({ title: 'Fee Receipt', text });
+              } else {
+                navigator.clipboard.writeText(text);
+                alert('Receipt details copied to clipboard!');
+              }
+            }}
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50"
+          >
             <Share2 size={18} />
             Share
           </button>

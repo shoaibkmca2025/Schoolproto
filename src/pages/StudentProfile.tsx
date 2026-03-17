@@ -161,11 +161,32 @@ export default function StudentProfile() {
         </div>
 
         <div className="flex flex-col gap-3 w-full md:w-auto">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
+          <button 
+            onClick={() => {
+              if (payments.length > 0) {
+                navigate(`/receipt/${payments[0].id}`);
+              } else {
+                // Scroll to payment form if no payments yet
+                document.getElementById('payment-form')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all"
+          >
             <FileText size={18} />
             Fee Receipt
           </button>
-          <button className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
+          <button 
+            onClick={() => {
+              const text = `Student: ${student.name}\nAdmission No: ${admission.admissionNo}\nTotal Fee: ₹${admission.totalFee}\nPaid: ₹${totalPaid}\nBalance: ₹${balance}`;
+              if (navigator.share) {
+                navigator.share({ title: 'Student Details', text });
+              } else {
+                navigator.clipboard.writeText(text);
+                alert('Details copied to clipboard!');
+              }
+            }}
+            className="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-all"
+          >
             <Share2 size={18} />
             Share Details
           </button>
@@ -180,7 +201,6 @@ export default function StudentProfile() {
               <History size={20} className="text-blue-600" />
               Payment History
             </h2>
-            <button className="text-blue-600 text-sm font-bold">View All</button>
           </div>
           
           <div className="space-y-4">
@@ -230,7 +250,7 @@ export default function StudentProfile() {
             Enter New Payment
           </h2>
           
-          <form onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+          <form id="payment-form" onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Amount (₹)</label>
@@ -325,7 +345,20 @@ export default function StudentProfile() {
             <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
               <p className="text-xs text-slate-400 max-w-[300px]">Please verify all details before submitting. Receipt will be auto-generated.</p>
               <div className="flex gap-4">
-                <button type="button" className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100">Cancel</button>
+                <button 
+                  type="button" 
+                  onClick={() => setPaymentForm({
+                    amount: 0,
+                    date: format(new Date(), 'yyyy-MM-dd'),
+                    installmentNumber: 1,
+                    paymentMode: 'Cash',
+                    transactionId: '',
+                    notes: ''
+                  })}
+                  className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100"
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
                   disabled={submitting}
