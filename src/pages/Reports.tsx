@@ -143,9 +143,9 @@ export default function Reports() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-none bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div className="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
               <Users size={24} />
             </div>
             <div>
@@ -159,9 +159,9 @@ export default function Reports() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-none bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Wallet size={24} />
             </div>
             <div>
@@ -172,9 +172,9 @@ export default function Reports() {
           <p className="text-xs text-slate-400">Total revenue received to date</p>
         </div>
 
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-none bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div className="size-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <CreditCard size={24} />
             </div>
             <div>
@@ -185,9 +185,9 @@ export default function Reports() {
           <p className="text-xs text-slate-400">Outstanding balance from admissions</p>
         </div>
 
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="size-12 rounded-none bg-slate-100 text-slate-600 flex items-center justify-center">
+            <div className="size-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
               <Calendar size={24} />
             </div>
             <div>
@@ -201,7 +201,7 @@ export default function Reports() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Monthly Collection Chart */}
-        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <h3 className="font-bold text-slate-900 flex items-center gap-2">
               <FileBarChart size={20} className="text-blue-600" />
@@ -253,7 +253,7 @@ export default function Reports() {
         </div>
 
         {/* Payment Mode Distribution */}
-        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
           <h3 className="font-bold text-slate-900 mb-8 flex items-center gap-2">
             <CreditCard size={20} className="text-blue-600" />
             Payment Mode Distribution
@@ -285,7 +285,7 @@ export default function Reports() {
         </div>
 
         {/* Class-wise Distribution */}
-        <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm lg:col-span-2">
+        <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
           <h3 className="font-bold text-slate-900 mb-8 flex items-center gap-2">
             <Users size={20} className="text-blue-600" />
             Class-wise Student Enrollment

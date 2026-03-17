@@ -78,7 +78,7 @@ export default function Admissions() {
         <h1 className="text-2xl font-bold text-slate-900">New Admission Entry</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-8 space-y-8">
           {/* Student Details */}
           <section>

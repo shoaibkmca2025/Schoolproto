@@ -89,10 +89,10 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-slate-500 font-medium">Total Students</span>
-            <div className="p-2 bg-blue-100 text-blue-600 rounded-none">
+            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
               <Users size={20} />
             </div>
           </div>
@@ -101,10 +101,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-slate-500 font-medium">Pending Fees</span>
-            <div className="p-2 bg-amber-100 text-amber-600 rounded-none">
+            <div className="p-2 bg-amber-100 text-amber-600 rounded-lg">
               <Wallet size={20} />
             </div>
           </div>
@@ -113,10 +113,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-none border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-slate-500 font-medium">Today's Collections</span>
-            <div className="p-2 bg-green-100 text-green-600 rounded-none">
+            <div className="p-2 bg-green-100 text-green-600 rounded-lg">
               <TrendingUp size={20} />
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Students Table */}
-      <div className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
           <h2 className="text-lg font-bold">Recent Students</h2>
           <button 
@@ -163,7 +163,7 @@ export default function Dashboard() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="size-8 rounded-none bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold text-xs">
+                        <div className="size-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold text-xs">
                           {student.name.substring(0, 2).toUpperCase()}
                         </div>
                         <span className="text-sm font-bold">{student.name}</span>
@@ -194,8 +194,8 @@ export default function Dashboard() {
 
       {/* Footer Quick Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
-        <div className="bg-blue-50 p-6 rounded-none border border-blue-100 flex items-center gap-4">
-          <div className="size-12 rounded-none bg-blue-600 text-white flex items-center justify-center">
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 flex items-center gap-4">
+          <div className="size-12 rounded-xl bg-blue-600 text-white flex items-center justify-center">
             <Receipt size={24} />
           </div>
           <div>
@@ -209,8 +209,8 @@ export default function Dashboard() {
             <ChevronRight size={20} />
           </button>
         </div>
-        <div className="bg-slate-900 p-6 rounded-none border border-slate-800 flex items-center gap-4">
-          <div className="size-12 rounded-none bg-slate-800 text-white flex items-center justify-center">
+        <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 flex items-center gap-4">
+          <div className="size-12 rounded-xl bg-slate-800 text-white flex items-center justify-center">
             <Mail size={24} />
           </div>
           <div>

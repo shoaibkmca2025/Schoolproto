@@ -41,7 +41,7 @@ export default function Records() {
         </div>
       </div>
 
-      <div className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
@@ -68,7 +68,7 @@ export default function Records() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-none bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                        <div className="size-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
                           {s.name.charAt(0)}
                         </div>
                         <div>

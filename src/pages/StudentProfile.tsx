@@ -158,9 +158,9 @@ export default function StudentProfile() {
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-white p-8 rounded-none border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8 items-start">
+      <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8 items-start">
         <div className="relative">
-          <div className="size-32 rounded-none bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}')` }}></div>
+          <div className="size-32 rounded-xl bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}')` }}></div>
           <button className="absolute -bottom-2 -right-2 size-8 rounded-full bg-blue-600 text-white flex items-center justify-center border-4 border-white">
             <PlusCircle size={14} />
           </button>
@@ -174,15 +174,15 @@ export default function StudentProfile() {
           <p className="text-slate-500 font-medium">Admission No: <span className="text-slate-900">{admission.admissionNo}</span></p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-slate-50 rounded-none border border-slate-100">
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
               <p className="text-xs text-slate-500 uppercase font-bold mb-1">Total Fee</p>
               <p className="text-xl font-bold text-slate-900">₹{admission.totalFee.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-blue-50 rounded-none border border-blue-100">
+            <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
               <p className="text-xs text-blue-600 uppercase font-bold mb-1">Paid Amount</p>
               <p className="text-xl font-bold text-blue-700">₹{totalPaid.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-amber-50 rounded-none border border-amber-100">
+            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
               <p className="text-xs text-amber-600 uppercase font-bold mb-1">Balance Due</p>
               <p className="text-xl font-bold text-amber-700">₹{balance.toLocaleString()}</p>
             </div>
@@ -240,7 +240,7 @@ export default function StudentProfile() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-none max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 size={32} />
             </div>
@@ -281,12 +281,12 @@ export default function StudentProfile() {
           
           <div className="space-y-4">
             {payments.length === 0 ? (
-              <div className="p-8 text-center bg-white rounded-none border border-slate-200 text-slate-500">
+              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-500">
                 No payments recorded yet.
               </div>
             ) : (
               payments.map((p, idx) => (
-                <div key={p.id} className="bg-white p-5 rounded-none border border-slate-200 shadow-sm relative overflow-hidden">
+                <div key={p.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h4 className="font-bold text-slate-900">Installment #{p.installmentNumber}</h4>
@@ -326,7 +326,7 @@ export default function StudentProfile() {
             Enter New Payment
           </h2>
           
-          <form id="payment-form" onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-none border border-slate-200 shadow-sm space-y-6">
+          <form id="payment-form" onSubmit={handlePaymentSubmit} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Amount (₹)</label>
@@ -400,7 +400,7 @@ export default function StudentProfile() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Upload Transaction Screenshot</label>
-              <div className="border-2 border-dashed border-slate-200 rounded-none p-8 text-center hover:border-blue-400 transition-all cursor-pointer">
+              <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center hover:border-blue-400 transition-all cursor-pointer">
                 <Upload className="mx-auto text-slate-400 mb-2" size={32} />
                 <p className="text-sm font-bold text-slate-600">Click to upload or drag and drop</p>
                 <p className="text-xs text-slate-400">PNG, JPG or PDF (MAX. 2MB)</p>

@@ -26,7 +26,7 @@ function Sidebar() {
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-8">
-          <div className="size-12 rounded-none overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
+          <div className="size-12 rounded-xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
             <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>

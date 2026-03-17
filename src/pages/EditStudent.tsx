@@ -171,7 +171,7 @@ export default function EditStudent() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-none max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 size={32} />
             </div>
@@ -200,7 +200,7 @@ export default function EditStudent() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-8 space-y-8">
           {/* Student Details */}
           <section>
