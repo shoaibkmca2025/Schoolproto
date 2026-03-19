@@ -32,7 +32,11 @@ export default function Register() {
       navigate('/');
     } catch (err: any) {
       console.error('Registration error:', err);
-      setError(err.message || 'Failed to create account. Please try again.');
+      if (err.code === 'auth/operation-not-allowed') {
+        setError('Email/Password registration is not enabled in your Firebase Console. Please enable it in the "Sign-in method" tab.');
+      } else {
+        setError(err.message || 'Failed to create account. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
