@@ -14,7 +14,14 @@ export default function Login() {
       await signInWithPopup(auth, googleProvider);
     } catch (err: any) {
       console.error('Login error:', err);
-      setError('Failed to sign in with Google. Please try again.');
+      const errorCode = err.code || 'unknown';
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain is not authorized. Please ensure the current URL is in the "Authorized domains" list in Firebase.');
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setError('Google Sign-In is not enabled in your Firebase Console. Please enable it in the "Sign-in method" tab.');
+      } else {
+        setError(`Login Failed (${errorCode}): ${err.message || 'Please try again.'}`);
+      }
     } finally {
       setLoading(false);
     }
