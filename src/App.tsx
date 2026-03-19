@@ -14,6 +14,7 @@ import ReceiptPreview from './pages/ReceiptPreview';
 import Reports from './pages/Reports';
 import EditStudent from './pages/EditStudent';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 function Sidebar({ user }: { user: User | null }) {
   const location = useLocation();
@@ -67,10 +68,16 @@ function Sidebar({ user }: { user: User | null }) {
       <div className="mt-auto p-6 border-t border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-slate-200 bg-cover bg-center" style={{ backgroundImage: `url('${user?.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin'}')` }}></div>
+            <div className="size-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200 overflow-hidden">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="User" className="w-full h-full object-cover" />
+              ) : (
+                <span>{user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'A'}</span>
+              )}
+            </div>
             <div className="flex flex-col">
-              <p className="text-sm font-bold truncate max-w-[120px]">{user?.displayName || 'School Admin'}</p>
-              <p className="text-xs text-slate-500">Public Access</p>
+              <p className="text-sm font-bold truncate max-w-[120px]">{user?.displayName || user?.email?.split('@')[0] || 'School Admin'}</p>
+              <p className="text-xs text-slate-500">Authorized Access</p>
             </div>
           </div>
           <button 
@@ -145,6 +152,7 @@ export default function App() {
           <div className="p-8">
             <Routes>
               <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+              <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
               <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
               <Route path="/admissions" element={user ? <Admissions /> : <Navigate to="/login" />} />
               <Route path="/records" element={user ? <Records /> : <Navigate to="/login" />} />
