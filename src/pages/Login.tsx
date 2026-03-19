@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword } from '../firebase';
-import { LogIn, School, ShieldCheck, Mail, Lock, UserPlus } from 'lucide-react';
+import { auth, signInWithEmailAndPassword } from '../firebase';
+import { LogIn, ShieldCheck, Mail, Lock } from 'lucide-react';
 import { logoBase64 } from '../assets/logoData';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -12,26 +12,6 @@ export default function Login() {
     password: ''
   });
   const navigate = useNavigate();
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (err: any) {
-      console.error('Login error:', err);
-      const errorCode = err.code || 'unknown';
-      if (err.code === 'auth/unauthorized-domain') {
-        setError('This domain is not authorized. Please ensure the current URL is in the "Authorized domains" list in Firebase.');
-      } else if (err.code === 'auth/operation-not-allowed') {
-        setError('Google Sign-In is not enabled in your Firebase Console. Please enable it in the "Sign-in method" tab.');
-      } else {
-        setError(`Login Failed (${errorCode}): ${err.message || 'Please try again.'}`);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,24 +93,6 @@ export default function Login() {
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-400">Or continue with</span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleGoogleLogin}
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50"
-            >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="size-5" />
-              Sign in with Google
-            </button>
           </div>
 
           <div className="mt-8 text-center">
