@@ -1,6 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { School, Mail, LayoutDashboard, UserPlus, Database, FileText, Search, Plus, Bell, ChevronRight, Receipt } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { School, Mail, LayoutDashboard, UserPlus, Database, FileText, Search, Plus, Bell, ChevronRight, Receipt, LogOut } from 'lucide-react';
 import { logoBase64 } from './assets/logoData';
+import { auth, signOut } from './firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -10,10 +13,20 @@ import StudentProfile from './pages/StudentProfile';
 import ReceiptPreview from './pages/ReceiptPreview';
 import Reports from './pages/Reports';
 import EditStudent from './pages/EditStudent';
+import Login from './pages/Login';
 
-function Sidebar() {
+function Sidebar({ user }: { user: User | null }) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -54,12 +67,19 @@ function Sidebar() {
       <div className="mt-auto p-6 border-t border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-slate-200 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=admin')` }}></div>
+            <div className="size-10 rounded-full bg-slate-200 bg-cover bg-center" style={{ backgroundImage: `url('${user?.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin'}')` }}></div>
             <div className="flex flex-col">
-              <p className="text-sm font-bold truncate max-w-[120px]">School Admin</p>
+              <p className="text-sm font-bold truncate max-w-[120px]">{user?.displayName || 'School Admin'}</p>
               <p className="text-xs text-slate-500">Public Access</p>
             </div>
           </div>
+          <button 
+            onClick={handleLogout}
+            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+            title="Logout"
+          >
+            <LogOut size={20} />
+          </button>
         </div>
       </div>
     </aside>
@@ -97,21 +117,41 @@ function Header() {
 }
 
 export default function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <div className="flex min-h-screen bg-slate-50">
-        <Sidebar />
+        {user && <Sidebar user={user} />}
         <main className="flex-1 flex flex-col">
-          <Header />
+          {user && <Header />}
           <div className="p-8">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/admissions" element={<Admissions />} />
-              <Route path="/records" element={<Records />} />
-              <Route path="/student/:id" element={<StudentProfile />} />
-              <Route path="/edit-student/:id" element={<EditStudent />} />
-              <Route path="/receipt/:paymentId" element={<ReceiptPreview />} />
-              <Route path="/reports" element={<Reports />} />
+              <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+              <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/admissions" element={user ? <Admissions /> : <Navigate to="/login" />} />
+              <Route path="/records" element={user ? <Records /> : <Navigate to="/login" />} />
+              <Route path="/student/:id" element={user ? <StudentProfile /> : <Navigate to="/login" />} />
+              <Route path="/edit-student/:id" element={user ? <EditStudent /> : <Navigate to="/login" />} />
+              <Route path="/receipt/:paymentId" element={user ? <ReceiptPreview /> : <Navigate to="/login" />} />
+              <Route path="/reports" element={user ? <Reports /> : <Navigate to="/login" />} />
             </Routes>
           </div>
         </main>

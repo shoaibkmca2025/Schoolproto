@@ -39,27 +39,28 @@ service cloud.firestore {
 
     // Students
     match /students/{studentId} {
-      allow read, write: if true;
+      allow read, write: if isAuthenticated();
     }
 
     // Admissions
     match /admissions/{admissionId} {
-      allow read, write: if true;
+      allow read, write: if isAuthenticated();
     }
 
     // Payments
     match /payments/{paymentId} {
-      allow read, write: if true;
+      allow read, write: if isAuthenticated();
     }
 
     // Users (for roles)
     match /users/{userId} {
-      allow read, write: if true;
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
     
     // Test connection
     match /test/connection {
-      allow read: if true;
+      allow read: if isAuthenticated();
     }
   }
 }
