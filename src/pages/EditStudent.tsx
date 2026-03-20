@@ -214,7 +214,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
                 />
@@ -222,7 +222,7 @@ export default function EditStudent() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Class</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.class}
                   onChange={e => setFormData({...formData, class: e.target.value})}
                 >
@@ -237,7 +237,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.fatherName}
                   onChange={e => setFormData({...formData, fatherName: e.target.value})}
                 />
@@ -247,7 +247,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.motherName}
                   onChange={e => setFormData({...formData, motherName: e.target.value})}
                 />
@@ -257,7 +257,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="tel"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.contact}
                   onChange={e => setFormData({...formData, contact: e.target.value})}
                 />
@@ -267,7 +267,7 @@ export default function EditStudent() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.academicYear}
                   onChange={e => setFormData({...formData, academicYear: e.target.value})}
                 />
@@ -276,7 +276,7 @@ export default function EditStudent() {
             <div className="mt-6 space-y-2">
               <label className="text-sm font-medium text-slate-700">Address</label>
               <textarea
-                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                 rows={3}
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
@@ -294,16 +294,19 @@ export default function EditStudent() {
                 <label className="text-sm font-medium text-slate-700">Total Annual Fee (₹)</label>
                 <input
                   required
-                  type="number"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  type="text"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.totalFee}
-                  onChange={e => setFormData({...formData, totalFee: Number(e.target.value)})}
+                  onChange={e => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    setFormData({...formData, totalFee: Number(val)});
+                  }}
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Installment Plan</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.installmentType}
                   onChange={e => setFormData({...formData, installmentType: e.target.value as Admission['installmentType']})}
                 >
@@ -316,7 +319,7 @@ export default function EditStudent() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Admission Status</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.status}
                   onChange={e => setFormData({...formData, status: e.target.value as Admission['status']})}
                 >

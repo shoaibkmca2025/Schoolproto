@@ -223,10 +223,13 @@ export default function Admissions() {
                 <label className="text-sm font-medium text-slate-700">Total Annual Fee (₹)</label>
                 <input
                   required
-                  type="number"
+                  type="text"
                   className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.totalFee}
-                  onChange={e => setFormData({...formData, totalFee: Number(e.target.value)})}
+                  onChange={e => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    setFormData({...formData, totalFee: Number(val)});
+                  }}
                 />
               </div>
               <div className="space-y-2">
