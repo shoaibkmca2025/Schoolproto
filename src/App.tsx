@@ -37,7 +37,7 @@ function Sidebar({ user }: { user: User | null }) {
   ];
 
   return (
-    <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
+    <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0 no-print">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-8">
           <div className="size-12 rounded-xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0">
@@ -96,7 +96,7 @@ function Sidebar({ user }: { user: User | null }) {
 function Header() {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-end">
+    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-end no-print">
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/admissions')}
@@ -139,7 +139,7 @@ export default function App() {
         {user && <Sidebar user={user} />}
         <main className="flex-1 flex flex-col">
           {user && <Header />}
-          <div className="p-8">
+          <div className="p-8 print:p-0">
             <Routes>
               <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
               <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Printer, Share2, ArrowLeft, FileText, CreditCard, School, User } from 'lucide-react';
 import { logoBase64 } from '../assets/logoData';
-import { useReactToPrint } from 'react-to-print';
 import { db, doc, getDoc, collection, query, where, getDocs } from '../firebase';
 import { Student, Admission, Payment } from '../types';
 import { format } from 'date-fns';
@@ -19,9 +18,9 @@ export default function ReceiptPreview() {
   const [totalPaidToDate, setTotalPaidToDate] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-  });
+  const handlePrint = () => {
+    window.print();
+  };
 
   useEffect(() => {
     if (!paymentId) return;
@@ -46,7 +45,7 @@ export default function ReceiptPreview() {
             // Calculate total paid to date
             const pq = query(collection(db, 'payments'), where('admissionId', '==', aData.id));
             const pSnap = await getDocs(pq);
-            const total = pSnap.docs.reduce((sum, doc) => sum + (doc.data() as Payment).amount, 0);
+            const total = pSnap.docs.reduce((sum, doc) => sum + Number((doc.data() as Payment).amount), 0);
             setTotalPaidToDate(total);
           }
         }
@@ -67,7 +66,7 @@ export default function ReceiptPreview() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between no-print">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-200 rounded-full">
             <ArrowLeft size={20} />
@@ -104,12 +103,12 @@ export default function ReceiptPreview() {
       </div>
 
       {/* Printable Area */}
-      <div className="bg-white p-12 rounded-xl shadow-lg border border-slate-200 min-h-[1000px] print:shadow-none print:border-none print:rounded-none" ref={componentRef}>
+      <div className="bg-white p-12 rounded-xl shadow-lg border border-slate-200 min-h-[1000px] print-container" ref={componentRef}>
         {/* Header */}
         <div className="flex justify-between items-start mb-12">
           <div className="flex gap-6">
-            <div className="size-24 rounded-xl overflow-hidden border border-slate-100 shadow-sm">
-              <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <div className="size-24 rounded-xl overflow-hidden border border-slate-100 shadow-sm bg-white">
+              <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-contain p-2" referrerPolicy="no-referrer" />
             </div>
             <div>
               <h2 className="text-3xl font-bold text-slate-900">Yashodai Play School</h2>
