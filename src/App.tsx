@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { School, Mail, LayoutDashboard, UserPlus, Database, FileText, Search, Plus, Bell, ChevronRight, Receipt, LogOut } from 'lucide-react';
+import { School, Mail, LayoutDashboard, UserPlus, Database, FileText, Plus, Bell, ChevronRight, Receipt, LogOut } from 'lucide-react';
 import { logoBase64 } from './assets/logoData';
 import { auth, signOut } from './firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -96,17 +96,7 @@ function Sidebar({ user }: { user: User | null }) {
 function Header() {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-6 flex-1 max-w-2xl">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            className="w-full bg-slate-100 border-none rounded-none py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 text-slate-900"
-            placeholder="Find students by Name or Admission No."
-            type="text"
-          />
-        </div>
-      </div>
+    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-end">
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/admissions')}

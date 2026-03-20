@@ -20,10 +20,11 @@ import {
   CreditCard, 
   Wallet, 
   Calendar,
-  Filter,
   Download,
   FileBarChart
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { db, collection, getDocs } from '../firebase';
 import { Student, Admission, Payment } from '../types';
 import { format, startOfMonth, endOfMonth, eachMonthOfInterval, subMonths, isWithinInterval } from 'date-fns';
@@ -114,6 +115,78 @@ export default function Reports() {
     fetchData();
   }, []);
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const dateStr = format(new Date(), 'dd-MMM-yyyy');
+
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(37, 99, 235); // blue-600
+    doc.text('Yashodai Play School', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(16);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text('Financial Summary Report', 105, 30, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${dateStr}`, 105, 38, { align: 'center' });
+
+    // Summary Stats Table
+    autoTable(doc, {
+      startY: 50,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Total Students', stats.totalStudents.toString()],
+        ['Total Collected', `Rs. ${stats.totalCollected.toLocaleString()}`],
+        ['Total Pending', `Rs. ${stats.totalPending.toLocaleString()}`],
+        ['Expected Revenue', `Rs. ${stats.totalExpected.toLocaleString()}`],
+      ],
+      theme: 'striped',
+      headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
+    });
+
+    // Class-wise Distribution Table
+    doc.setFontSize(14);
+    doc.setTextColor(30, 41, 59); // slate-800
+    doc.text('Class-wise Student Enrollment', 14, (doc as any).lastAutoTable.finalY + 15);
+
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['Class', 'Number of Students']],
+      body: classData.map(item => [item.name, item.students.toString()]),
+      theme: 'grid',
+      headStyles: { fillColor: [100, 116, 139] },
+    });
+
+    // Payment Mode Distribution Table
+    doc.setFontSize(14);
+    doc.text('Payment Mode Distribution', 14, (doc as any).lastAutoTable.finalY + 15);
+
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['Payment Mode', 'Total Collected']],
+      body: paymentModeData.map(item => [item.name, `Rs. ${item.value.toLocaleString()}`]),
+      theme: 'grid',
+      headStyles: { fillColor: [100, 116, 139] },
+    });
+
+    // Footer
+    const pageCount = (doc as any).internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text(
+        `Page ${i} of ${pageCount} - Yashodai Play School Management System`,
+        105,
+        doc.internal.pageSize.height - 10,
+        { align: 'center' }
+      );
+    }
+
+    doc.save(`Financial_Report_${dateStr}.pdf`);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -130,11 +203,10 @@ export default function Reports() {
           <p className="text-slate-500">Overview of school admissions and fee collections</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-2 hover:bg-slate-50">
-            <Filter size={18} />
-            Filter
-          </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700">
+          <button 
+            onClick={handleExportPDF}
+            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all active:scale-95"
+          >
             <Download size={18} />
             Export PDF
           </button>

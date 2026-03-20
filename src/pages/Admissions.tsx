@@ -82,7 +82,7 @@ export default function Admissions() {
         <div className="p-8 space-y-8">
           {/* Student Details */}
           <section>
-            <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
               <UserPlus size={20} className="text-blue-600" />
               Student Information
             </h2>
@@ -92,7 +92,7 @@ export default function Admissions() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   placeholder="e.g. Rahul Sharma"
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
@@ -101,7 +101,7 @@ export default function Admissions() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Class</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.class}
                   onChange={e => setFormData({...formData, class: e.target.value})}
                 >
@@ -116,7 +116,8 @@ export default function Admissions() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  placeholder="Father's full name"
                   value={formData.fatherName}
                   onChange={e => setFormData({...formData, fatherName: e.target.value})}
                 />
@@ -126,7 +127,8 @@ export default function Admissions() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  placeholder="Mother's full name"
                   value={formData.motherName}
                   onChange={e => setFormData({...formData, motherName: e.target.value})}
                 />
@@ -136,7 +138,8 @@ export default function Admissions() {
                 <input
                   required
                   type="tel"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  placeholder="10-digit mobile number"
                   value={formData.contact}
                   onChange={e => setFormData({...formData, contact: e.target.value})}
                 />
@@ -146,7 +149,7 @@ export default function Admissions() {
                 <input
                   required
                   type="text"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.academicYear}
                   onChange={e => setFormData({...formData, academicYear: e.target.value})}
                 />
@@ -155,8 +158,9 @@ export default function Admissions() {
             <div className="mt-6 space-y-2">
               <label className="text-sm font-medium text-slate-700">Address</label>
               <textarea
-                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                 rows={3}
+                placeholder="Full residential address"
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
               ></textarea>
@@ -167,14 +171,14 @@ export default function Admissions() {
 
           {/* Fee Details */}
           <section>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Fee Structure</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-6">Fee Structure</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Total Annual Fee (₹)</label>
                 <input
                   required
                   type="number"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.totalFee}
                   onChange={e => setFormData({...formData, totalFee: Number(e.target.value)})}
                 />
@@ -182,7 +186,7 @@ export default function Admissions() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Installment Plan</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={formData.installmentType}
                   onChange={e => setFormData({...formData, installmentType: e.target.value as Admission['installmentType']})}
                 >
@@ -207,7 +211,7 @@ export default function Admissions() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50 shadow-lg shadow-blue-600/20"
           >
             {loading ? 'Saving...' : (
               <>
