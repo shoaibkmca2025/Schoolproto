@@ -22,52 +22,67 @@ export default function Dashboard() {
     todayCollections: 0
   });
   const [recentStudents, setRecentStudents] = useState<any[]>([]);
+  const [pendingStudents, setPendingStudents] = useState<any[]>([]);
+  const [showReminderModal, setShowReminderModal] = useState(false);
 
   useEffect(() => {
     // Real-time listener for students count
     const unsubscribeStudents = onSnapshot(collection(db, 'students'), (snapshot) => {
+      const allStudents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Student & { id: string }));
       setStats(prev => ({ ...prev, totalStudents: snapshot.size }));
-    });
+      
+      // We need admissions and payments to calculate pending per student
+      const unsubAdmissions = onSnapshot(collection(db, 'admissions'), (admSnapshot) => {
+        const adms = admSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Admission & { id: string }));
+        
+        const unsubPayments = onSnapshot(collection(db, 'payments'), (paySnapshot) => {
+          const pays = paySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment & { id: string }));
+          
+          // Calculate stats
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const todayCollections = pays
+            .filter(p => {
+              const pDate = new Date(p.date);
+              pDate.setHours(0, 0, 0, 0);
+              return pDate.getTime() === today.getTime();
+            })
+            .reduce((sum, p) => sum + p.amount, 0);
 
-    let admissions: Admission[] = [];
-    let payments: Payment[] = [];
+          let totalPending = 0;
+          const pendingList: any[] = [];
 
-    const updateStats = () => {
-      // Calculate Today's Collections
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayCollections = payments
-        .filter(p => {
-          const pDate = new Date(p.date);
-          pDate.setHours(0, 0, 0, 0);
-          return pDate.getTime() === today.getTime();
-        })
-        .reduce((sum, p) => sum + p.amount, 0);
+          adms.forEach(admission => {
+            const student = allStudents.find(s => s.id === admission.studentId);
+            if (!student) return;
 
-      // Calculate Pending Fees
-      let totalPending = 0;
-      admissions.forEach(admission => {
-        const paidForAdmission = payments
-          .filter(p => p.admissionId === admission.id)
-          .reduce((sum, p) => sum + p.amount, 0);
-        totalPending += (admission.totalFee - paidForAdmission);
+            const paidForAdmission = pays
+              .filter(p => p.admissionId === admission.id)
+              .reduce((sum, p) => sum + p.amount, 0);
+            
+            const balance = admission.totalFee - paidForAdmission;
+            totalPending += balance;
+
+            if (balance > 0) {
+              pendingList.push({
+                ...student,
+                admissionId: admission.id,
+                balance,
+                admissionNo: admission.admissionNo
+              });
+            }
+          });
+
+          setStats({
+            totalStudents: snapshot.size,
+            pendingFees: totalPending,
+            todayCollections
+          });
+          setPendingStudents(pendingList);
+        });
+        return () => unsubPayments();
       });
-
-      setStats(prev => ({
-        ...prev,
-        pendingFees: totalPending,
-        todayCollections: todayCollections
-      }));
-    };
-
-    const unsubscribeAdmissions = onSnapshot(collection(db, 'admissions'), (snapshot) => {
-      admissions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Admission));
-      updateStats();
-    });
-
-    const unsubscribePayments = onSnapshot(collection(db, 'payments'), (snapshot) => {
-      payments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment));
-      updateStats();
+      return () => unsubAdmissions();
     });
 
     // Recent students query
@@ -79,11 +94,16 @@ export default function Dashboard() {
 
     return () => {
       unsubscribeStudents();
-      unsubscribeAdmissions();
-      unsubscribePayments();
       unsubscribeRecent();
     };
   }, []);
+
+  const sendWhatsAppReminder = (student: any) => {
+    const message = `Hello ${student.fatherName || 'Parent'}, this is a reminder regarding the pending school fees for ${student.name} (Adm No: ${student.admissionNo}). Pending Amount: ₹${student.balance.toLocaleString()}. Please clear the dues at the earliest. Thank you!`;
+    const phone = student.contact.replace(/\D/g, '');
+    const whatsappUrl = `https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   return (
     <div className="space-y-8">
@@ -218,13 +238,79 @@ export default function Dashboard() {
             <p className="text-sm text-slate-400">Notify parents about pending fees via SMS/Email.</p>
           </div>
           <button 
-            onClick={() => alert('Reminder feature: This would send WhatsApp/SMS notifications to parents with pending fees.')}
+            onClick={() => setShowReminderModal(true)}
             className="ml-auto p-2 hover:bg-slate-800 rounded-xl text-slate-400"
           >
             <ChevronRight size={20} />
           </button>
         </div>
       </div>
+
+      {/* Reminder Modal */}
+      {showReminderModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+              <div>
+                <h3 className="text-xl font-bold">Pending Fee Reminders</h3>
+                <p className="text-slate-400 text-sm">{pendingStudents.length} students with outstanding dues</p>
+              </div>
+              <button 
+                onClick={() => setShowReminderModal(false)}
+                className="p-2 hover:bg-slate-800 rounded-xl transition-colors"
+              >
+                <MoreVertical size={20} className="rotate-45" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {pendingStudents.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="size-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp size={32} />
+                  </div>
+                  <h4 className="font-bold text-slate-900">All caught up!</h4>
+                  <p className="text-slate-500">No students currently have pending fees.</p>
+                </div>
+              ) : (
+                pendingStudents.map((student) => (
+                  <div key={student.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all">
+                    <div className="flex items-center gap-4">
+                      <div className="size-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
+                        {student.name.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-900">{student.name}</h4>
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <span>{student.class}</span>
+                          <span>•</span>
+                          <span className="font-medium text-amber-600">₹{student.balance.toLocaleString()} Pending</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => sendWhatsAppReminder(student)}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-green-600/20"
+                    >
+                      <Mail size={16} />
+                      WhatsApp
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button 
+                onClick={() => setShowReminderModal(false)}
+                className="px-6 py-2 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

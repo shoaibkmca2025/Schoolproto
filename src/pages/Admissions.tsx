@@ -1,41 +1,80 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserPlus, ArrowLeft, Save } from 'lucide-react';
-import { db, collection, addDoc, handleFirestoreError, OperationType } from '../firebase';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { UserPlus, ArrowLeft, Save, GraduationCap } from 'lucide-react';
+import { db, collection, addDoc, doc, getDoc, updateDoc, handleFirestoreError, OperationType } from '../firebase';
 import { Student, Admission } from '../types';
 
 export default function Admissions() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const studentId = searchParams.get('studentId');
+  const nextClassParam = searchParams.get('nextClass');
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     fatherName: '',
     motherName: '',
-    class: 'Nursery',
+    class: nextClassParam || 'Nursery',
     contact: '',
     address: '',
-    academicYear: '2023-2024',
+    academicYear: '2024-2025',
     totalFee: 0,
     installmentType: 'Monthly' as Admission['installmentType'],
   });
+
+  useEffect(() => {
+    if (studentId) {
+      const fetchStudent = async () => {
+        try {
+          const studentDoc = await getDoc(doc(db, 'students', studentId));
+          if (studentDoc.exists()) {
+            const data = studentDoc.data() as Student;
+            setFormData(prev => ({
+              ...prev,
+              name: data.name,
+              fatherName: data.fatherName,
+              motherName: data.motherName,
+              contact: data.contact,
+              address: data.address,
+              class: nextClassParam || data.class
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching student for promotion:', error);
+        }
+      };
+      fetchStudent();
+    }
+  }, [studentId, nextClassParam]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // 1. Create Student
-      const studentData: Student = {
-        name: formData.name,
-        fatherName: formData.fatherName,
-        motherName: formData.motherName,
-        class: formData.class,
-        contact: formData.contact,
-        address: formData.address,
-        createdAt: new Date().toISOString(),
-      };
-      
-      const studentRef = await addDoc(collection(db, 'students'), studentData);
+      let finalStudentId = studentId;
+
+      if (!studentId) {
+        // 1. Create New Student
+        const studentData: Student = {
+          name: formData.name,
+          fatherName: formData.fatherName,
+          motherName: formData.motherName,
+          class: formData.class,
+          contact: formData.contact,
+          address: formData.address,
+          createdAt: new Date().toISOString(),
+        };
+        
+        const studentRef = await addDoc(collection(db, 'students'), studentData);
+        finalStudentId = studentRef.id;
+      } else {
+        // Update existing student's class
+        await updateDoc(doc(db, 'students', studentId), {
+          class: formData.class
+        });
+      }
 
       // 2. Create Admission
       const installmentAmount = formData.installmentType === 'Yearly' ? formData.totalFee :
@@ -47,7 +86,7 @@ export default function Admissions() {
 
       const admissionData: Admission = {
         admissionNo,
-        studentId: studentRef.id,
+        studentId: finalStudentId!,
         academicYear: formData.academicYear,
         totalFee: Number(formData.totalFee),
         installmentType: formData.installmentType,
@@ -58,7 +97,7 @@ export default function Admissions() {
 
       await addDoc(collection(db, 'admissions'), admissionData);
       
-      navigate(`/student/${studentRef.id}`);
+      navigate(`/student/${finalStudentId}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'admissions');
     } finally {
@@ -75,7 +114,9 @@ export default function Admissions() {
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className="text-2xl font-bold text-slate-900">New Admission Entry</h1>
+        <h1 className="text-2xl font-bold text-slate-900">
+          {studentId ? 'Promotion / Next Std Admission' : 'New Admission Entry'}
+        </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -83,16 +124,17 @@ export default function Admissions() {
           {/* Student Details */}
           <section>
             <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <UserPlus size={20} className="text-blue-600" />
-              Student Information
+              {studentId ? <GraduationCap size={20} className="text-emerald-600" /> : <UserPlus size={20} className="text-blue-600" />}
+              {studentId ? 'Promoting Student' : 'Student Information'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Student Name</label>
                 <input
                   required
+                  readOnly={!!studentId}
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
                   placeholder="e.g. Rahul Sharma"
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
@@ -115,8 +157,9 @@ export default function Admissions() {
                 <label className="text-sm font-medium text-slate-700">Father's Name</label>
                 <input
                   required
+                  readOnly={!!studentId}
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
                   placeholder="Father's full name"
                   value={formData.fatherName}
                   onChange={e => setFormData({...formData, fatherName: e.target.value})}
@@ -126,8 +169,9 @@ export default function Admissions() {
                 <label className="text-sm font-medium text-slate-700">Mother's Name</label>
                 <input
                   required
+                  readOnly={!!studentId}
                   type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
                   placeholder="Mother's full name"
                   value={formData.motherName}
                   onChange={e => setFormData({...formData, motherName: e.target.value})}
@@ -137,8 +181,9 @@ export default function Admissions() {
                 <label className="text-sm font-medium text-slate-700">Contact Number</label>
                 <input
                   required
+                  readOnly={!!studentId}
                   type="tel"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
                   placeholder="10-digit mobile number"
                   value={formData.contact}
                   onChange={e => setFormData({...formData, contact: e.target.value})}
@@ -158,7 +203,8 @@ export default function Admissions() {
             <div className="mt-6 space-y-2">
               <label className="text-sm font-medium text-slate-700">Address</label>
               <textarea
-                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                readOnly={!!studentId}
+                className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
                 rows={3}
                 placeholder="Full residential address"
                 value={formData.address}
@@ -215,8 +261,8 @@ export default function Admissions() {
           >
             {loading ? 'Saving...' : (
               <>
-                <Save size={18} />
-                Save Admission
+                {studentId ? <GraduationCap size={18} /> : <Save size={18} />}
+                {studentId ? 'Confirm Promotion' : 'Save Admission'}
               </>
             )}
           </button>

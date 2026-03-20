@@ -12,7 +12,8 @@ import {
   Upload,
   CheckCircle2,
   UserPlus,
-  Trash2
+  Trash2,
+  GraduationCap
 } from 'lucide-react';
 import { 
   db, 
@@ -52,17 +53,25 @@ export default function StudentProfile() {
   const [submitting, setSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Auto-suggest next unpaid installment
+  // Auto-suggest next unpaid installment and pre-fill balance
   useEffect(() => {
-    if (payments.length >= 0) {
+    if (payments.length >= 0 && admission) {
       const paidNums = payments.map(p => p.installmentNumber);
       let next = 1;
       while (paidNums.includes(next)) {
         next++;
       }
-      setPaymentForm(prev => ({ ...prev, installmentNumber: next }));
+      
+      const currentPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+      const currentBalance = admission.totalFee - currentPaid;
+      
+      setPaymentForm(prev => ({ 
+        ...prev, 
+        installmentNumber: next,
+        amount: currentBalance > 0 ? currentBalance : 0
+      }));
     }
-  }, [payments]);
+  }, [payments, admission]);
 
   const handleDelete = async () => {
     if (!id || !admission) return;
@@ -163,6 +172,18 @@ export default function StudentProfile() {
 
   const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
   const balance = admission.totalFee - totalPaid;
+  const isFeeCleared = balance <= 0;
+
+  const getNextClass = (currentClass: string) => {
+    const classes = ['Play Group', 'Nursery', 'LKG', 'UKG'];
+    const index = classes.indexOf(currentClass);
+    if (index !== -1 && index < classes.length - 1) {
+      return classes[index + 1];
+    }
+    return null;
+  };
+
+  const nextClass = getNextClass(student.class);
 
   return (
     <div className="space-y-8">
@@ -210,6 +231,19 @@ export default function StudentProfile() {
         </div>
 
         <div className="flex flex-col gap-3 w-full md:w-auto">
+          <button 
+            onClick={() => navigate(`/admissions?studentId=${id}&nextClass=${nextClass}`)}
+            disabled={!isFeeCleared || !nextClass}
+            className={`px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+              isFeeCleared && nextClass
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-200'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+            }`}
+            title={!isFeeCleared ? "Clear all fees to enable promotion" : !nextClass ? "No further classes available" : `Promote to ${nextClass}`}
+          >
+            <GraduationCap size={18} />
+            Admission in Next Std
+          </button>
           <button 
             onClick={() => navigate(`/edit-student/${id}`)}
             className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all"
@@ -350,24 +384,24 @@ export default function StudentProfile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Amount (₹)</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
-                  <input
-                    required
-                    type="number"
-                    className="w-full pl-8 rounded-none border-slate-200 focus:ring-blue-600/50"
-                    placeholder="Enter amount"
-                    value={paymentForm.amount}
-                    onChange={e => setPaymentForm({...paymentForm, amount: Number(e.target.value)})}
-                  />
-                </div>
+                <input
+                  required
+                  type="text"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  placeholder="Enter amount"
+                  value={paymentForm.amount}
+                  onChange={e => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    setPaymentForm({...paymentForm, amount: Number(val)});
+                  }}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Payment Date</label>
                 <input
                   required
                   type="date"
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={paymentForm.date}
                   onChange={e => setPaymentForm({...paymentForm, date: e.target.value})}
                 />
@@ -375,7 +409,7 @@ export default function StudentProfile() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Installment No.</label>
                 <select
-                  className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                   value={paymentForm.installmentNumber}
                   onChange={e => setPaymentForm({...paymentForm, installmentNumber: Number(e.target.value)})}
                 >
@@ -414,7 +448,7 @@ export default function StudentProfile() {
               <label className="text-sm font-medium text-slate-700">Transaction ID / Reference</label>
               <input
                 type="text"
-                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                 placeholder="e.g. TXN123456789"
                 value={paymentForm.transactionId}
                 onChange={e => setPaymentForm({...paymentForm, transactionId: e.target.value})}
@@ -433,7 +467,7 @@ export default function StudentProfile() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Remarks (Optional)</label>
               <textarea
-                className="w-full rounded-none border-slate-200 focus:ring-blue-600/50"
+                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
                 placeholder="Any additional notes..."
                 rows={3}
                 value={paymentForm.notes}
