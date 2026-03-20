@@ -44,7 +44,7 @@ function Sidebar({ user }: { user: User | null }) {
             <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>
-            <h1 className="text-slate-900 text-base font-bold leading-tight">Yashodai Play School</h1>
+            <h1 className="text-slate-900 text-base font-bold leading-tight">Yashodai Play School & Nursery</h1>
             <p className="text-slate-500 text-xs font-normal">Admission & Receipt System</p>
           </div>
         </div>

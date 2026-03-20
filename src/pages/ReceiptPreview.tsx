@@ -111,7 +111,7 @@ export default function ReceiptPreview() {
               <img src={logoBase64} alt="Yashodai Logo" className="w-full h-full object-contain p-2" referrerPolicy="no-referrer" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-slate-900">Yashodai Play School</h2>
+              <h2 className="text-3xl font-bold text-slate-900">Yashodai Play School & Nursery</h2>
               <p className="text-blue-600 font-bold mb-2">Nashik Branch</p>
               <p className="text-sm text-slate-500 max-w-[300px]">
                 Narayani Bangla, Jay Ambe Nagar, behind K.K. Wagh College, Panchavati, Nashik.<br />
