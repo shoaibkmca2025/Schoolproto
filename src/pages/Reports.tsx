@@ -42,6 +42,18 @@ export default function Reports() {
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [paymentModeData, setPaymentModeData] = useState<any[]>([]);
   const [classData, setClassData] = useState<any[]>([]);
+  const [selectedClass, setSelectedClass] = useState<string>('All Classes');
+  const [classFinancials, setClassFinancials] = useState<any>({
+    totalExpected: 0,
+    totalCollected: 0,
+    totalPending: 0,
+    studentCount: 0
+  });
+  const [allData, setAllData] = useState<{students: Student[], admissions: Admission[], payments: Payment[]}>({
+    students: [],
+    admissions: [],
+    payments: []
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +67,8 @@ export default function Reports() {
         const students = studentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Student);
         const admissions = admissionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Admission);
         const payments = paymentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Payment);
+
+        setAllData({ students, admissions, payments });
 
         // Basic Stats
         const totalExpected = admissions.reduce((sum, a) => sum + a.totalFee, 0);
@@ -115,6 +129,37 @@ export default function Reports() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (allData.students.length === 0) return;
+
+    if (selectedClass === 'All Classes') {
+      setClassFinancials({
+        totalExpected: stats.totalExpected,
+        totalCollected: stats.totalCollected,
+        totalPending: stats.totalPending,
+        studentCount: stats.totalStudents
+      });
+    } else {
+      const classStudents = allData.students.filter(s => s.class === selectedClass);
+      const studentIds = classStudents.map(s => s.id);
+      
+      const classAdmissions = allData.admissions.filter(a => studentIds.includes(a.studentId));
+      const admissionIds = classAdmissions.map(a => a.id);
+      
+      const classPayments = allData.payments.filter(p => admissionIds.includes(p.admissionId));
+      
+      const totalExpected = classAdmissions.reduce((sum, a) => sum + a.totalFee, 0);
+      const totalCollected = classPayments.reduce((sum, p) => sum + p.amount, 0);
+      
+      setClassFinancials({
+        totalExpected,
+        totalCollected,
+        totalPending: totalExpected - totalCollected,
+        studentCount: classStudents.length
+      });
+    }
+  }, [selectedClass, allData, stats]);
+
   const handleExportPDF = () => {
     const doc = new jsPDF();
     const dateStr = format(new Date(), 'dd-MMM-yyyy');
@@ -136,10 +181,11 @@ export default function Reports() {
       startY: 50,
       head: [['Metric', 'Value']],
       body: [
-        ['Total Students', stats.totalStudents.toString()],
-        ['Total Collected', `Rs. ${stats.totalCollected.toLocaleString()}`],
-        ['Total Pending', `Rs. ${stats.totalPending.toLocaleString()}`],
-        ['Expected Revenue', `Rs. ${stats.totalExpected.toLocaleString()}`],
+        ['Report Scope', selectedClass],
+        ['Total Students', classFinancials.studentCount.toString()],
+        ['Total Collected', `Rs. ${classFinancials.totalCollected.toLocaleString()}`],
+        ['Total Pending', `Rs. ${classFinancials.totalPending.toLocaleString()}`],
+        ['Expected Revenue', `Rs. ${classFinancials.totalExpected.toLocaleString()}`],
       ],
       theme: 'striped',
       headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
@@ -203,6 +249,17 @@ export default function Reports() {
           <p className="text-slate-500">Overview of school admissions and fee collections</p>
         </div>
         <div className="flex gap-3">
+          <select 
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+            className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-600/20 transition-all"
+          >
+            <option>All Classes</option>
+            <option>Play Group</option>
+            <option>Nursery</option>
+            <option>LKG</option>
+            <option>UKG</option>
+          </select>
           <button 
             onClick={handleExportPDF}
             className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all active:scale-95"
@@ -221,13 +278,13 @@ export default function Reports() {
               <Users size={24} />
             </div>
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Total Students</p>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalStudents}</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">Students ({selectedClass})</p>
+              <p className="text-2xl font-bold text-slate-900">{classFinancials.studentCount}</p>
             </div>
           </div>
           <div className="flex items-center gap-1 text-green-600 text-xs font-bold">
             <TrendingUp size={14} />
-            <span>+12% from last year</span>
+            <span>Active Enrollment</span>
           </div>
         </div>
 
@@ -237,11 +294,11 @@ export default function Reports() {
               <Wallet size={24} />
             </div>
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Total Collected</p>
-              <p className="text-2xl font-bold text-slate-900">₹{stats.totalCollected.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">Collected</p>
+              <p className="text-2xl font-bold text-slate-900">₹{classFinancials.totalCollected.toLocaleString()}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400">Total revenue received to date</p>
+          <p className="text-xs text-slate-400">Revenue received for {selectedClass}</p>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -250,11 +307,11 @@ export default function Reports() {
               <CreditCard size={24} />
             </div>
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Pending Fees</p>
-              <p className="text-2xl font-bold text-slate-900">₹{stats.totalPending.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">Pending</p>
+              <p className="text-2xl font-bold text-slate-900">₹{classFinancials.totalPending.toLocaleString()}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400">Outstanding balance from admissions</p>
+          <p className="text-xs text-slate-400">Outstanding for {selectedClass}</p>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -263,11 +320,11 @@ export default function Reports() {
               <Calendar size={24} />
             </div>
             <div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Expected Revenue</p>
-              <p className="text-2xl font-bold text-slate-900">₹{stats.totalExpected.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">Expected</p>
+              <p className="text-2xl font-bold text-slate-900">₹{classFinancials.totalExpected.toLocaleString()}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400">Target for current academic year</p>
+          <p className="text-xs text-slate-400">Target for {selectedClass}</p>
         </div>
       </div>
 

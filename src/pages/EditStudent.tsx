@@ -25,7 +25,8 @@ export default function EditStudent() {
   const [admissionId, setAdmissionId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     fatherName: '',
     motherName: '',
     class: 'Nursery',
@@ -34,6 +35,7 @@ export default function EditStudent() {
     academicYear: '',
     totalFee: 0,
     installmentType: 'Monthly' as Admission['installmentType'],
+    dueDay: 5,
     status: 'Active' as Admission['status']
   });
 
@@ -56,7 +58,8 @@ export default function EditStudent() {
             setAdmissionId(aDoc.id);
             
             setFormData({
-              name: sData.name,
+              firstName: sData.firstName || sData.name?.split(' ')[0] || '',
+              lastName: sData.lastName || sData.name?.split(' ').slice(1).join(' ') || '',
               fatherName: sData.fatherName,
               motherName: sData.motherName,
               class: sData.class,
@@ -65,6 +68,7 @@ export default function EditStudent() {
               academicYear: aData.academicYear,
               totalFee: aData.totalFee,
               installmentType: aData.installmentType,
+              dueDay: aData.dueDay || 5,
               status: aData.status
             });
           }
@@ -88,7 +92,8 @@ export default function EditStudent() {
       // 1. Update Student
       const studentRef = doc(db, 'students', id);
       await updateDoc(studentRef, {
-        name: formData.name,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         fatherName: formData.fatherName,
         motherName: formData.motherName,
         class: formData.class,
@@ -108,6 +113,7 @@ export default function EditStudent() {
         totalFee: Number(formData.totalFee),
         installmentType: formData.installmentType,
         installmentAmount,
+        dueDay: Number(formData.dueDay),
         status: formData.status
       });
       
@@ -177,7 +183,7 @@ export default function EditStudent() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 text-center mb-2">Delete Student Record?</h3>
             <p className="text-slate-500 text-center mb-8">
-              This action cannot be undone. All admission details and payment history for <strong>{formData.name}</strong> will be permanently deleted.
+              This action cannot be undone. All admission details and payment history for <strong>{formData.firstName} {formData.lastName}</strong> will be permanently deleted.
             </p>
             <div className="flex gap-3">
               <button
@@ -210,13 +216,23 @@ export default function EditStudent() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Student Name</label>
+                <label className="text-sm font-medium text-slate-700">First Name</label>
                 <input
                   required
                   type="text"
                   className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.name}
-                  onChange={e => setFormData({...formData, name: e.target.value})}
+                  value={formData.firstName}
+                  onChange={e => setFormData({...formData, firstName: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Last Name</label>
+                <input
+                  required
+                  type="text"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  value={formData.lastName}
+                  onChange={e => setFormData({...formData, lastName: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
@@ -315,6 +331,18 @@ export default function EditStudent() {
                   <option value="Quarterly">Quarterly (4 Installments)</option>
                   <option value="Monthly">Monthly (12 Installments)</option>
                 </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Monthly Due Day (1-31)</label>
+                <input
+                  required
+                  type="number"
+                  min="1"
+                  max="31"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  value={formData.dueDay}
+                  onChange={e => setFormData({...formData, dueDay: Number(e.target.value)})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Admission Status</label>

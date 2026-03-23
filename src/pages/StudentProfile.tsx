@@ -201,7 +201,7 @@ export default function StudentProfile() {
       {/* Profile Header Card */}
       <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-8 items-start">
         <div className="relative">
-          <div className="size-32 rounded-xl bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}')` }}></div>
+          <div className="size-32 rounded-xl bg-slate-100 bg-cover bg-center" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${student.firstName || student.name || 'student'} ${student.lastName || ''}')` }}></div>
           <button className="absolute -bottom-2 -right-2 size-8 rounded-full bg-blue-600 text-white flex items-center justify-center border-4 border-white">
             <PlusCircle size={14} />
           </button>
@@ -209,12 +209,14 @@ export default function StudentProfile() {
         
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-slate-900">{student.name}</h1>
+            <h1 className="text-3xl font-bold text-slate-900">
+              {student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown')}
+            </h1>
             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase">Active</span>
           </div>
           <p className="text-slate-500 font-medium">Admission No: <span className="text-slate-900">{admission.admissionNo}</span></p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
               <p className="text-xs text-slate-500 uppercase font-bold mb-1">Total Fee</p>
               <p className="text-xl font-bold text-slate-900">₹{admission.totalFee.toLocaleString()}</p>
@@ -226,6 +228,10 @@ export default function StudentProfile() {
             <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
               <p className="text-xs text-amber-600 uppercase font-bold mb-1">Balance Due</p>
               <p className="text-xl font-bold text-amber-700">₹{balance.toLocaleString()}</p>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <p className="text-xs text-slate-500 uppercase font-bold mb-1">Monthly Due Day</p>
+              <p className="text-xl font-bold text-slate-900">{admission.dueDay || 5}th</p>
             </div>
           </div>
         </div>
@@ -267,7 +273,8 @@ export default function StudentProfile() {
           </button>
           <button 
             onClick={() => {
-              const text = `Student: ${student.name}\nAdmission No: ${admission.admissionNo}\nTotal Fee: ₹${admission.totalFee}\nPaid: ₹${totalPaid}\nBalance: ₹${balance}`;
+              const fullName = student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown');
+              const text = `Student: ${fullName}\nAdmission No: ${admission.admissionNo}\nTotal Fee: ₹${admission.totalFee}\nPaid: ₹${totalPaid}\nBalance: ₹${balance}`;
               if (navigator.share) {
                 navigator.share({ title: 'Student Details', text });
               } else {
@@ -291,6 +298,46 @@ export default function StudentProfile() {
         </div>
       </div>
 
+      {/* Student & Family Details */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-8 py-4 bg-slate-50 border-b border-slate-200">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <UserPlus size={20} className="text-blue-600" />
+            Student & Family Details
+          </h2>
+        </div>
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Contact Number</p>
+            <p className="text-slate-900 font-medium">{student.contact}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Father's Name</p>
+            <p className="text-slate-900 font-medium">{student.fatherName}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Mother's Name</p>
+            <p className="text-slate-900 font-medium">{student.motherName}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Current Class</p>
+            <p className="text-slate-900 font-medium">{student.class}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Academic Year</p>
+            <p className="text-slate-900 font-medium">{admission.academicYear}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Date of Admission</p>
+            <p className="text-slate-900 font-medium">{format(new Date(admission.createdAt), 'dd MMM yyyy')}</p>
+          </div>
+          <div className="lg:col-span-3 space-y-1">
+            <p className="text-xs text-slate-500 uppercase font-bold">Residential Address</p>
+            <p className="text-slate-900 font-medium">{student.address}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -300,7 +347,7 @@ export default function StudentProfile() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 text-center mb-2">Delete Student Record?</h3>
             <p className="text-slate-500 text-center mb-8">
-              This action cannot be undone. All admission details and payment history for <strong>{student?.name}</strong> will be permanently deleted.
+              This action cannot be undone. All admission details and payment history for <strong>{student?.firstName ? `${student.firstName} ${student.lastName}` : (student?.name || 'this student')}</strong> will be permanently deleted.
             </p>
             <div className="flex gap-3">
               <button

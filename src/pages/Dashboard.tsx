@@ -68,7 +68,8 @@ export default function Dashboard() {
                 ...student,
                 admissionId: admission.id,
                 balance,
-                admissionNo: admission.admissionNo
+                admissionNo: admission.admissionNo,
+                dueDay: admission.dueDay || 5
               });
             }
           });
@@ -99,7 +100,10 @@ export default function Dashboard() {
   }, []);
 
   const sendWhatsAppReminder = (student: any) => {
-    const message = `Hello ${student.fatherName || 'Parent'}, this is a reminder regarding the pending school fees for ${student.name} (Adm No: ${student.admissionNo}). Pending Amount: ₹${student.balance.toLocaleString()}. Please clear the dues at the earliest. Thank you!`;
+    const firstName = student.firstName || student.name?.split(' ')[0] || '';
+    const lastName = student.lastName || student.name?.split(' ').slice(1).join(' ') || '';
+    const currentMonth = format(new Date(), 'MMMM');
+    const message = `Hello ${student.fatherName || 'Parent'}, this is a reminder regarding the pending school fees for ${firstName} ${lastName} (Adm No: ${student.admissionNo}). \n\nPending Amount: ₹${student.balance.toLocaleString()}\nDue Date: ${student.dueDay}th of ${currentMonth}\n\nPlease clear the dues at the earliest. Thank you!`;
     const phone = student.contact.replace(/\D/g, '');
     const whatsappUrl = `https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -184,9 +188,12 @@ export default function Dashboard() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="size-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold text-xs">
-                          {student.name.substring(0, 2).toUpperCase()}
+                          {(student.firstName || student.name || '').substring(0, 1).toUpperCase()}
+                          {(student.lastName || '').substring(0, 1).toUpperCase()}
                         </div>
-                        <span className="text-sm font-bold">{student.name}</span>
+                        <span className="text-sm font-bold">
+                          {student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown')}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">{student.class}</td>
@@ -277,14 +284,24 @@ export default function Dashboard() {
                   <div key={student.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all">
                     <div className="flex items-center gap-4">
                       <div className="size-10 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
-                        {student.name.substring(0, 2).toUpperCase()}
+                        {(student.firstName || student.name || '').substring(0, 1).toUpperCase()}
+                        {(student.lastName || '').substring(0, 1).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900">{student.name}</h4>
+                        <h4 className="font-bold text-slate-900">
+                          {student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown')}
+                        </h4>
                         <div className="flex items-center gap-2 text-xs text-slate-500">
                           <span>{student.class}</span>
                           <span>•</span>
                           <span className="font-medium text-amber-600">₹{student.balance.toLocaleString()} Pending</span>
+                          <span>•</span>
+                          <span className={`${new Date().getDate() > (student.dueDay || 5) ? 'text-red-600 font-bold' : 'text-slate-500'}`}>
+                            Due: {student.dueDay || 5}th
+                          </span>
+                          {new Date().getDate() > (student.dueDay || 5) && (
+                            <span className="bg-red-100 text-red-600 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Overdue</span>
+                          )}
                         </div>
                       </div>
                     </div>

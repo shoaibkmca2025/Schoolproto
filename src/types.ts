@@ -1,6 +1,8 @@
 export interface Student {
   id?: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string; // For backward compatibility
   fatherName: string;
   motherName: string;
   class: string;
@@ -17,6 +19,7 @@ export interface Admission {
   totalFee: number;
   installmentType: 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
   installmentAmount: number;
+  dueDay: number; // Day of the month (1-31)
   status: 'Active' | 'Inactive' | 'Completed';
   createdAt: string;
 }

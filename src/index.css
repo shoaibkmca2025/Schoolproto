@@ -8,7 +8,7 @@
 @media print {
   @page {
     margin: 0;
-    size: auto;
+    size: A5;
   }
   
   body {
@@ -18,13 +18,14 @@
   }
   
   .print-container {
-    width: 100% !important;
-    height: auto !important;
+    width: 148mm !important;
+    height: 210mm !important;
     margin: 0 !important;
-    padding: 2cm !important;
+    padding: 10mm !important;
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+    overflow: hidden;
   }
 
   .no-print {

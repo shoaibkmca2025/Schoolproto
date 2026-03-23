@@ -12,7 +12,8 @@ export default function Admissions() {
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     fatherName: '',
     motherName: '',
     class: nextClassParam || 'Nursery',
@@ -21,6 +22,7 @@ export default function Admissions() {
     academicYear: '2024-2025',
     totalFee: 0,
     installmentType: 'Monthly' as Admission['installmentType'],
+    dueDay: 5, // Default to 5th of every month
   });
 
   useEffect(() => {
@@ -32,7 +34,8 @@ export default function Admissions() {
             const data = studentDoc.data() as Student;
             setFormData(prev => ({
               ...prev,
-              name: data.name,
+              firstName: data.firstName,
+              lastName: data.lastName,
               fatherName: data.fatherName,
               motherName: data.motherName,
               contact: data.contact,
@@ -58,7 +61,8 @@ export default function Admissions() {
       if (!studentId) {
         // 1. Create New Student
         const studentData: Student = {
-          name: formData.name,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           fatherName: formData.fatherName,
           motherName: formData.motherName,
           class: formData.class,
@@ -91,6 +95,7 @@ export default function Admissions() {
         totalFee: Number(formData.totalFee),
         installmentType: formData.installmentType,
         installmentAmount,
+        dueDay: Number(formData.dueDay),
         status: 'Active',
         createdAt: new Date().toISOString(),
       };
@@ -129,15 +134,27 @@ export default function Admissions() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Student Name</label>
+                <label className="text-sm font-medium text-slate-700">First Name</label>
                 <input
                   required
                   readOnly={!!studentId}
                   type="text"
                   className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="e.g. Rahul Sharma"
-                  value={formData.name}
-                  onChange={e => setFormData({...formData, name: e.target.value})}
+                  placeholder="e.g. Rahul"
+                  value={formData.firstName}
+                  onChange={e => setFormData({...formData, firstName: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Last Name</label>
+                <input
+                  required
+                  readOnly={!!studentId}
+                  type="text"
+                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                  placeholder="e.g. Sharma"
+                  value={formData.lastName}
+                  onChange={e => setFormData({...formData, lastName: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
@@ -244,6 +261,18 @@ export default function Admissions() {
                   <option value="Quarterly">Quarterly (4 Installments)</option>
                   <option value="Monthly">Monthly (12 Installments)</option>
                 </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Monthly Due Day (1-31)</label>
+                <input
+                  required
+                  type="number"
+                  min="1"
+                  max="31"
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                  value={formData.dueDay}
+                  onChange={e => setFormData({...formData, dueDay: Number(e.target.value)})}
+                />
               </div>
             </div>
           </section>
