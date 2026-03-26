@@ -13,6 +13,7 @@ import StudentProfile from './pages/StudentProfile';
 import ReceiptPreview from './pages/ReceiptPreview';
 import Reports from './pages/Reports';
 import EditStudent from './pages/EditStudent';
+import PendingFees from './pages/PendingFees';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -35,6 +36,7 @@ function Sidebar({ user }: { user: User | null }) {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Admissions', path: '/admissions', icon: UserPlus },
     { name: 'Records', path: '/records', icon: Database },
+    { name: 'Pending Fees', path: '/pending-fees', icon: Bell },
     { name: 'Reports', path: '/reports', icon: FileText },
   ];
 
@@ -199,12 +201,12 @@ function Header() {
                 <div className="p-3 bg-slate-50 border-t border-slate-100">
                   <button 
                     onClick={() => {
-                      navigate('/');
+                      navigate('/pending-fees');
                       setShowNotifications(false);
                     }}
                     className="w-full py-2 text-xs font-bold text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                   >
-                    View All in Dashboard
+                    View All Pending Fees
                   </button>
                 </div>
               </div>
@@ -260,6 +262,7 @@ export default function App() {
               <Route path="/edit-student/:id" element={user ? <EditStudent /> : <Navigate to="/login" />} />
               <Route path="/receipt/:paymentId" element={user ? <ReceiptPreview /> : <Navigate to="/login" />} />
               <Route path="/reports" element={user ? <Reports /> : <Navigate to="/login" />} />
+              <Route path="/pending-fees" element={user ? <PendingFees /> : <Navigate to="/login" />} />
             </Routes>
           </div>
         </main>
