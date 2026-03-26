@@ -36,7 +36,6 @@ function Sidebar({ user }: { user: User | null }) {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Admissions', path: '/admissions', icon: UserPlus },
     { name: 'Records', path: '/records', icon: Database },
-    { name: 'Pending Fees', path: '/pending-fees', icon: Bell },
     { name: 'Reports', path: '/reports', icon: FileText },
   ];
 
