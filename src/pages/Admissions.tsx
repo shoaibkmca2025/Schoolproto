@@ -33,6 +33,7 @@ export default function Admissions() {
     motherName: '',
     class: nextClassParam || 'Nursery',
     contact: '',
+    alternateWhatsappNumber: '',
     address: '',
     academicYear: defaultAcademicYear,
     totalFee: 0,
@@ -54,6 +55,7 @@ export default function Admissions() {
               fatherName: data.fatherName,
               motherName: data.motherName,
               contact: data.contact,
+              alternateWhatsappNumber: data.alternateWhatsappNumber || '',
               address: data.address,
               class: nextClassParam || data.class
             }));
@@ -82,6 +84,7 @@ export default function Admissions() {
           motherName: formData.motherName,
           class: formData.class,
           contact: formData.contact,
+          alternateWhatsappNumber: formData.alternateWhatsappNumber,
           address: formData.address,
           createdAt: new Date().toISOString(),
         };
@@ -141,111 +144,134 @@ export default function Admissions() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-8 space-y-8">
-          {/* Student Details */}
-          <section>
-            <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-              {studentId ? <GraduationCap size={20} className="text-emerald-600" /> : <UserPlus size={20} className="text-blue-600" />}
-              {studentId ? 'Promoting Student' : 'Student Information'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">First Name</label>
-                <input
-                  required
-                  readOnly={!!studentId}
-                  type="text"
-                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="e.g. Rahul"
-                  value={formData.firstName}
-                  onChange={e => setFormData({...formData, firstName: e.target.value})}
-                />
+            {/* Student Details */}
+            <section>
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                {studentId ? <GraduationCap size={20} className="text-emerald-600" /> : <UserPlus size={20} className="text-blue-600" />}
+                {studentId ? 'Promoting Student' : 'Student Information'}
+              </h2>
+              <div className="space-y-6">
+                {/* Row 1: Name Details */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">First Name</label>
+                    <input
+                      required
+                      readOnly={!!studentId}
+                      type="text"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="e.g. Rahul"
+                      value={formData.firstName}
+                      onChange={e => setFormData({...formData, firstName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Father's Name</label>
+                    <input
+                      required
+                      readOnly={!!studentId}
+                      type="text"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="Father's full name"
+                      value={formData.fatherName}
+                      onChange={e => setFormData({...formData, fatherName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Last Name</label>
+                    <input
+                      required
+                      readOnly={!!studentId}
+                      type="text"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="e.g. Sharma"
+                      value={formData.lastName}
+                      onChange={e => setFormData({...formData, lastName: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2: Contact & Family Details */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Mother's Name</label>
+                    <input
+                      required
+                      readOnly={!!studentId}
+                      type="text"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="Mother's full name"
+                      value={formData.motherName}
+                      onChange={e => setFormData({...formData, motherName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Contact Number</label>
+                    <input
+                      required
+                      readOnly={!!studentId}
+                      type="tel"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="10-digit mobile number"
+                      value={formData.contact}
+                      onChange={e => setFormData({...formData, contact: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">WhatsApp Number</label>
+                    <input
+                      readOnly={!!studentId}
+                      type="tel"
+                      className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                      placeholder="Optional WhatsApp number"
+                      value={formData.alternateWhatsappNumber}
+                      onChange={e => setFormData({...formData, alternateWhatsappNumber: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                {/* Row 4: Other Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Class</label>
+                    <select
+                      className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                      value={formData.class}
+                      onChange={e => setFormData({...formData, class: e.target.value})}
+                    >
+                      <option>Play Group</option>
+                      <option>Nursery</option>
+                      <option>LKG</option>
+                      <option>UKG</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Academic Year</label>
+                    <select
+                      className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
+                      value={formData.academicYear}
+                      onChange={e => setFormData({...formData, academicYear: e.target.value})}
+                    >
+                      {academicYears.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Address</label>
+                  <textarea
+                    readOnly={!!studentId}
+                    className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
+                    rows={3}
+                    placeholder="Full residential address"
+                    value={formData.address}
+                    onChange={e => setFormData({...formData, address: e.target.value})}
+                  ></textarea>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Last Name</label>
-                <input
-                  required
-                  readOnly={!!studentId}
-                  type="text"
-                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="e.g. Sharma"
-                  value={formData.lastName}
-                  onChange={e => setFormData({...formData, lastName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Class</label>
-                <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.class}
-                  onChange={e => setFormData({...formData, class: e.target.value})}
-                >
-                  <option>Play Group</option>
-                  <option>Nursery</option>
-                  <option>LKG</option>
-                  <option>UKG</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Father's Name</label>
-                <input
-                  required
-                  readOnly={!!studentId}
-                  type="text"
-                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="Father's full name"
-                  value={formData.fatherName}
-                  onChange={e => setFormData({...formData, fatherName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Mother's Name</label>
-                <input
-                  required
-                  readOnly={!!studentId}
-                  type="text"
-                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="Mother's full name"
-                  value={formData.motherName}
-                  onChange={e => setFormData({...formData, motherName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Contact Number</label>
-                <input
-                  required
-                  readOnly={!!studentId}
-                  type="tel"
-                  className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                  placeholder="10-digit mobile number"
-                  value={formData.contact}
-                  onChange={e => setFormData({...formData, contact: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Academic Year</label>
-                <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
-                  value={formData.academicYear}
-                  onChange={e => setFormData({...formData, academicYear: e.target.value})}
-                >
-                  {academicYears.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mt-6 space-y-2">
-              <label className="text-sm font-medium text-slate-700">Address</label>
-              <textarea
-                readOnly={!!studentId}
-                className={`w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 ${studentId ? 'bg-slate-100' : 'bg-slate-50'}`}
-                rows={3}
-                placeholder="Full residential address"
-                value={formData.address}
-                onChange={e => setFormData({...formData, address: e.target.value})}
-              ></textarea>
-            </div>
-          </section>
+            </section>
 
           <hr className="border-slate-100" />
 

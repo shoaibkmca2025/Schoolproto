@@ -15,6 +15,8 @@ import { db, collection, getDocs, query, orderBy, limit, onSnapshot } from '../f
 import { Student, Admission, Payment } from '../types';
 import { format } from 'date-fns';
 
+import { usePendingFees } from '../utils/usePendingFees';
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -23,68 +25,34 @@ export default function Dashboard() {
     todayCollections: 0
   });
   const [recentStudents, setRecentStudents] = useState<any[]>([]);
-  const [pendingStudents, setPendingStudents] = useState<any[]>([]);
+  const { pendingStudents } = usePendingFees();
   const [showReminderModal, setShowReminderModal] = useState(false);
 
   useEffect(() => {
-    // Real-time listener for students count
+    // Real-time listener for students count and collections
     const unsubscribeStudents = onSnapshot(collection(db, 'students'), (snapshot) => {
-      const allStudents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Student & { id: string }));
       setStats(prev => ({ ...prev, totalStudents: snapshot.size }));
       
-      // We need admissions and payments to calculate pending per student
-      const unsubAdmissions = onSnapshot(collection(db, 'admissions'), (admSnapshot) => {
-        const adms = admSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Admission & { id: string }));
+      const unsubPayments = onSnapshot(collection(db, 'payments'), (paySnapshot) => {
+        const pays = paySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment & { id: string }));
         
-        const unsubPayments = onSnapshot(collection(db, 'payments'), (paySnapshot) => {
-          const pays = paySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment & { id: string }));
-          
-          // Calculate stats
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const todayCollections = pays
-            .filter(p => {
-              const pDate = new Date(p.date);
-              pDate.setHours(0, 0, 0, 0);
-              return pDate.getTime() === today.getTime();
-            })
-            .reduce((sum, p) => sum + p.amount, 0);
+        // Calculate stats
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayCollections = pays
+          .filter(p => {
+            const pDate = new Date(p.date);
+            pDate.setHours(0, 0, 0, 0);
+            return pDate.getTime() === today.getTime();
+          })
+          .reduce((sum, p) => sum + p.amount, 0);
 
-          let totalPending = 0;
-          const pendingList: any[] = [];
-
-          adms.forEach(admission => {
-            const student = allStudents.find(s => s.id === admission.studentId);
-            if (!student) return;
-
-            const paidForAdmission = pays
-              .filter(p => p.admissionId === admission.id)
-              .reduce((sum, p) => sum + p.amount, 0);
-            
-            const balance = admission.totalFee - paidForAdmission;
-            totalPending += balance;
-
-            if (balance > 0) {
-              pendingList.push({
-                ...student,
-                admissionId: admission.id,
-                balance,
-                admissionNo: admission.admissionNo,
-                dueDay: admission.dueDay || 5
-              });
-            }
-          });
-
-          setStats({
-            totalStudents: snapshot.size,
-            pendingFees: totalPending,
-            todayCollections
-          });
-          setPendingStudents(pendingList);
-        });
-        return () => unsubPayments();
+        setStats(prev => ({
+          ...prev,
+          todayCollections
+        }));
       });
-      return () => unsubAdmissions();
+      return () => unsubPayments();
     });
 
     // Recent students query
@@ -100,15 +68,12 @@ export default function Dashboard() {
     };
   }, []);
 
-  const sendWhatsAppReminder = (student: any) => {
-    const firstName = student.firstName || student.name?.split(' ')[0] || '';
-    const lastName = student.lastName || student.name?.split(' ').slice(1).join(' ') || '';
-    const currentMonth = format(new Date(), 'MMMM');
-    const message = `Hello ${student.fatherName || 'Parent'}, this is a reminder regarding the pending school fees for ${firstName} ${lastName} (Adm No: ${student.admissionNo}). \n\nPending Amount: ₹${student.balance.toLocaleString()}\nDue Date: ${student.dueDay}th of ${currentMonth}\n\nPlease clear the dues at the earliest. Thank you!`;
-    const phone = student.contact.replace(/\D/g, '');
-    const whatsappUrl = `https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  useEffect(() => {
+    if (pendingStudents.length >= 0) {
+      const totalPending = pendingStudents.reduce((sum, s) => sum + s.balance, 0);
+      setStats(prev => ({ ...prev, pendingFees: totalPending }));
+    }
+  }, [pendingStudents]);
 
   return (
     <div className="space-y-8">
@@ -307,13 +272,17 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    <button 
-                      onClick={() => sendWhatsAppReminder(student)}
+                    <a 
+                      href={`https://wa.me/${((student.alternateWhatsappNumber || student.contact).replace(/\D/g, '').startsWith('91') ? (student.alternateWhatsappNumber || student.contact).replace(/\D/g, '') : '91' + (student.alternateWhatsappNumber || student.contact).replace(/\D/g, ''))}?text=${encodeURIComponent(`Hello ${student.fatherName || 'Parent'}, this is a reminder regarding the pending school fees for ${student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'your child')}. \n\nPending Amount: ₹${student.balance.toLocaleString()}\nDue Date: ${student.dueDay || 5}th of this month.\n\nPlease clear the dues at the earliest. Thank you!`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-green-600/20"
                     >
-                      <Mail size={16} />
+                      <svg viewBox="0 0 24 24" className="size-4 fill-current">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.628 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
                       WhatsApp
-                    </button>
+                    </a>
                   </div>
                 ))
               )}

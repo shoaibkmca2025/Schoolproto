@@ -7,6 +7,7 @@ export interface Student {
   motherName: string;
   class: string;
   contact: string;
+  alternateWhatsappNumber?: string;
   address: string;
   createdAt: string;
 }

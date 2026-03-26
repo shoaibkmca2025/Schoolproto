@@ -29,7 +29,6 @@ export default function EditStudent() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [admissionId, setAdmissionId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
@@ -39,6 +38,7 @@ export default function EditStudent() {
     motherName: '',
     class: 'Nursery',
     contact: '',
+    alternateWhatsappNumber: '',
     address: '',
     academicYear: '',
     totalFee: 0,
@@ -72,6 +72,7 @@ export default function EditStudent() {
               motherName: sData.motherName,
               class: sData.class,
               contact: sData.contact,
+              alternateWhatsappNumber: sData.alternateWhatsappNumber || '',
               address: sData.address,
               academicYear: aData.academicYear,
               totalFee: aData.totalFee,
@@ -106,6 +107,7 @@ export default function EditStudent() {
         motherName: formData.motherName,
         class: formData.class,
         contact: formData.contact,
+        alternateWhatsappNumber: formData.alternateWhatsappNumber,
         address: formData.address,
       });
 
@@ -133,31 +135,6 @@ export default function EditStudent() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!id || !admissionId) return;
-    
-    setSaving(true);
-    try {
-      // 1. Delete Payments
-      const pq = query(collection(db, 'payments'), where('admissionId', '==', admissionId));
-      const pSnap = await getDocs(pq);
-      const deletePromises = pSnap.docs.map(d => deleteDoc(doc(db, 'payments', d.id)));
-      await Promise.all(deletePromises);
-
-      // 2. Delete Admission
-      await deleteDoc(doc(db, 'admissions', admissionId));
-
-      // 3. Delete Student
-      await deleteDoc(doc(db, 'students', id));
-
-      navigate('/records');
-    } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'students');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   if (loading) return <div className="text-center py-20">Loading student data...</div>;
 
   return (
@@ -172,141 +149,123 @@ export default function EditStudent() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900">Edit Student Record</h1>
         </div>
-        <button
-          onClick={() => setShowDeleteModal(true)}
-          disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl font-bold transition-all"
-        >
-          <Trash2 size={18} />
-          Delete Record
-        </button>
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trash2 size={32} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 text-center mb-2">Delete Student Record?</h3>
-            <p className="text-slate-500 text-center mb-8">
-              This action cannot be undone. All admission details and payment history for <strong>{formData.firstName} {formData.lastName}</strong> will be permanently deleted.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  handleDelete();
-                }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
-              >
-                Delete Now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-8 space-y-8">
           {/* Student Details */}
           <section>
-            <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
               <UserPlus size={20} className="text-blue-600" />
               Student Information
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-6">
+              {/* Row 1: Name Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">First Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.firstName}
+                    onChange={e => setFormData({...formData, firstName: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Father's Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.fatherName}
+                    onChange={e => setFormData({...formData, fatherName: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Last Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.lastName}
+                    onChange={e => setFormData({...formData, lastName: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Contact & Family Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Mother's Name</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.motherName}
+                    onChange={e => setFormData({...formData, motherName: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Contact Number</label>
+                  <input
+                    required
+                    type="tel"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.contact}
+                    onChange={e => setFormData({...formData, contact: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">WhatsApp Number</label>
+                  <input
+                    type="tel"
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    placeholder="Optional WhatsApp number"
+                    value={formData.alternateWhatsappNumber}
+                    onChange={e => setFormData({...formData, alternateWhatsappNumber: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Other Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Class</label>
+                  <select
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                    value={formData.class}
+                    onChange={e => setFormData({...formData, class: e.target.value})}
+                  >
+                    <option>Play Group</option>
+                    <option>Nursery</option>
+                    <option>LKG</option>
+                    <option>UKG</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">Academic Year</label>
+                  <select
+                    className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
+                    value={formData.academicYear}
+                    onChange={e => setFormData({...formData, academicYear: e.target.value})}
+                  >
+                    {academicYears.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">First Name</label>
-                <input
-                  required
-                  type="text"
+                <label className="text-sm font-medium text-slate-700">Address</label>
+                <textarea
                   className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.firstName}
-                  onChange={e => setFormData({...formData, firstName: e.target.value})}
-                />
+                  rows={3}
+                  value={formData.address}
+                  onChange={e => setFormData({...formData, address: e.target.value})}
+                ></textarea>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Last Name</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.lastName}
-                  onChange={e => setFormData({...formData, lastName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Class</label>
-                <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.class}
-                  onChange={e => setFormData({...formData, class: e.target.value})}
-                >
-                  <option>Play Group</option>
-                  <option>Nursery</option>
-                  <option>LKG</option>
-                  <option>UKG</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Father's Name</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.fatherName}
-                  onChange={e => setFormData({...formData, fatherName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Mother's Name</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.motherName}
-                  onChange={e => setFormData({...formData, motherName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Contact Number</label>
-                <input
-                  required
-                  type="tel"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                  value={formData.contact}
-                  onChange={e => setFormData({...formData, contact: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Academic Year</label>
-                <select
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
-                  value={formData.academicYear}
-                  onChange={e => setFormData({...formData, academicYear: e.target.value})}
-                >
-                  {academicYears.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mt-6 space-y-2">
-              <label className="text-sm font-medium text-slate-700">Address</label>
-              <textarea
-                className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
-                rows={3}
-                value={formData.address}
-                onChange={e => setFormData({...formData, address: e.target.value})}
-              ></textarea>
             </div>
           </section>
 

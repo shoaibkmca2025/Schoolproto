@@ -51,7 +51,6 @@ export default function StudentProfile() {
     notes: ''
   });
   const [submitting, setSubmitting] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Auto-suggest next unpaid installment and pre-fill installment amount
   useEffect(() => {
@@ -75,31 +74,6 @@ export default function StudentProfile() {
       }));
     }
   }, [payments, admission]);
-
-  const handleDelete = async () => {
-    if (!id || !admission) return;
-    
-    setSubmitting(true);
-    try {
-      // 1. Delete Payments
-      const pq = query(collection(db, 'payments'), where('admissionId', '==', admission.id));
-      const pSnap = await getDocs(pq);
-      const deletePromises = pSnap.docs.map(d => deleteDoc(doc(db, 'payments', d.id)));
-      await Promise.all(deletePromises);
-
-      // 2. Delete Admission
-      await deleteDoc(doc(db, 'admissions', admission.id!));
-
-      // 3. Delete Student
-      await deleteDoc(doc(db, 'students', id));
-
-      navigate('/records');
-    } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'students');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   useEffect(() => {
     if (!id) return;
@@ -188,6 +162,14 @@ export default function StudentProfile() {
 
   const nextClass = getNextClass(student.class);
 
+  const studentFullName = student.firstName 
+    ? `${student.firstName} ${student.fatherName} ${student.lastName}` 
+    : student.name 
+      ? (student.fatherName && !student.name.toLowerCase().includes(student.fatherName.toLowerCase())
+          ? `${student.name.split(' ')[0]} ${student.fatherName} ${student.name.split(' ').slice(1).join(' ')}`.trim()
+          : student.name)
+      : 'Unknown';
+
   return (
     <div className="space-y-8">
       {/* Breadcrumbs & Actions */}
@@ -213,7 +195,7 @@ export default function StudentProfile() {
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold text-slate-900">
-              {student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown')}
+              {studentFullName}
             </h1>
             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase">Active</span>
           </div>
@@ -276,8 +258,7 @@ export default function StudentProfile() {
           </button>
           <button 
             onClick={() => {
-              const fullName = student.firstName ? `${student.firstName} ${student.lastName}` : (student.name || 'Unknown');
-              const text = `Student: ${fullName}\nAdmission No: ${admission.admissionNo}\nTotal Fee: ₹${admission.totalFee}\nPaid: ₹${totalPaid}\nBalance: ₹${balance}`;
+              const text = `Student: ${studentFullName}\nAdmission No: ${admission.admissionNo}\nTotal Fee: ₹${admission.totalFee}\nPaid: ₹${totalPaid}\nBalance: ₹${balance}`;
               if (navigator.share) {
                 navigator.share({ title: 'Student Details', text });
               } else {
@@ -289,14 +270,6 @@ export default function StudentProfile() {
           >
             <Share2 size={18} />
             Share Details
-          </button>
-          <button 
-            onClick={() => setShowDeleteModal(true)}
-            disabled={submitting}
-            className="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
-          >
-            <Trash2 size={18} />
-            Delete Record
           </button>
         </div>
       </div>
@@ -340,38 +313,6 @@ export default function StudentProfile() {
           </div>
         </div>
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="size-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trash2 size={32} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 text-center mb-2">Delete Student Record?</h3>
-            <p className="text-slate-500 text-center mb-8">
-              This action cannot be undone. All admission details and payment history for <strong>{student?.firstName ? `${student.firstName} ${student.lastName}` : (student?.name || 'this student')}</strong> will be permanently deleted.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  handleDelete();
-                }}
-                className="flex-1 bg-red-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
-              >
-                Delete Now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Payment History */}
