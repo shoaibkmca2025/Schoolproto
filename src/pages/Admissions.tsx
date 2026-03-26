@@ -10,6 +10,21 @@ export default function Admissions() {
   const studentId = searchParams.get('studentId');
   const nextClassParam = searchParams.get('nextClass');
 
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  // Academic year usually starts in June (5) or April (3)
+  // If we are in Jan-May, the current academic year is (Year-1)-Year
+  // If we are in June-Dec, the current academic year is Year-(Year+1)
+  const defaultAcademicYear = currentMonth < 5 
+    ? `${currentYear - 1}-${currentYear}` 
+    : `${currentYear}-${currentYear + 1}`;
+
+  const academicYears = [];
+  for (let i = -1; i <= 3; i++) {
+    const year = (currentMonth < 5 ? currentYear - 1 : currentYear) + i;
+    academicYears.push(`${year}-${year + 1}`);
+  }
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -19,7 +34,7 @@ export default function Admissions() {
     class: nextClassParam || 'Nursery',
     contact: '',
     address: '',
-    academicYear: '2024-2025',
+    academicYear: defaultAcademicYear,
     totalFee: 0,
     installmentType: 'Monthly' as Admission['installmentType'],
     dueDay: 5, // Default to 5th of every month
@@ -208,13 +223,15 @@ export default function Admissions() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Academic Year</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                <select
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
                   value={formData.academicYear}
                   onChange={e => setFormData({...formData, academicYear: e.target.value})}
-                />
+                >
+                  {academicYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="mt-6 space-y-2">

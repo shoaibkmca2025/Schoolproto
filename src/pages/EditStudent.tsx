@@ -19,6 +19,14 @@ import { Student, Admission } from '../types';
 export default function EditStudent() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const academicYears = [];
+  for (let i = -2; i <= 3; i++) {
+    const year = (currentMonth < 5 ? currentYear - 1 : currentYear) + i;
+    academicYears.push(`${year}-${year + 1}`);
+  }
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -280,13 +288,15 @@ export default function EditStudent() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Academic Year</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50"
+                <select
+                  className="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 outline-none transition-all py-2.5 px-4 bg-slate-50 font-bold"
                   value={formData.academicYear}
                   onChange={e => setFormData({...formData, academicYear: e.target.value})}
-                />
+                >
+                  {academicYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="mt-6 space-y-2">

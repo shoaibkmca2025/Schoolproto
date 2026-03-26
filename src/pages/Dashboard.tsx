@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
+  X,
   Users, 
   Wallet, 
   TrendingUp, 
   TrendingDown, 
-  MoreVertical,
+  Eye,
   Receipt,
   Mail,
   ChevronRight
@@ -204,11 +205,12 @@ export default function Dashboard() {
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/edit-student/${student.id}`);
+                          navigate(`/student/${student.id}`);
                         }}
-                        className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-xl transition-all"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-all"
                       >
-                        <MoreVertical size={18} />
+                        <Eye size={14} />
+                        View
                       </button>
                     </td>
                   </tr>
@@ -266,7 +268,7 @@ export default function Dashboard() {
                 onClick={() => setShowReminderModal(false)}
                 className="p-2 hover:bg-slate-800 rounded-xl transition-colors"
               >
-                <MoreVertical size={20} className="rotate-45" />
+                <X size={20} />
               </button>
             </div>
             

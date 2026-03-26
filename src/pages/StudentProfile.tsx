@@ -53,7 +53,7 @@ export default function StudentProfile() {
   const [submitting, setSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Auto-suggest next unpaid installment and pre-fill balance
+  // Auto-suggest next unpaid installment and pre-fill installment amount
   useEffect(() => {
     if (payments.length >= 0 && admission) {
       const paidNums = payments.map(p => p.installmentNumber);
@@ -65,10 +65,13 @@ export default function StudentProfile() {
       const currentPaid = payments.reduce((sum, p) => sum + p.amount, 0);
       const currentBalance = admission.totalFee - currentPaid;
       
+      // Use installmentAmount as default, but don't exceed balance
+      const defaultAmount = Math.min(admission.installmentAmount, currentBalance);
+      
       setPaymentForm(prev => ({ 
         ...prev, 
         installmentNumber: next,
-        amount: currentBalance > 0 ? currentBalance : 0
+        amount: defaultAmount > 0 ? defaultAmount : 0
       }));
     }
   }, [payments, admission]);

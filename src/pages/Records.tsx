@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MoreVertical, User } from 'lucide-react';
+import { Search, Eye, User } from 'lucide-react';
 import { db, collection, onSnapshot, query, orderBy } from '../firebase';
 import { Student } from '../types';
 import { format } from 'date-fns';
@@ -102,18 +102,16 @@ export default function Records() {
                     <td className="px-6 py-4 text-sm text-slate-600">{s.contact}</td>
                     <td className="px-6 py-4 text-sm text-slate-600">{format(new Date(s.createdAt), 'dd MMM yyyy')}</td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/edit-student/${s.id}`);
-                          }}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
-                          title="Edit Student"
-                        >
-                          <MoreVertical size={18} />
-                        </button>
-                      </div>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/student/${s.id}`);
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-all"
+                      >
+                        <Eye size={14} />
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))
