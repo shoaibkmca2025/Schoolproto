@@ -33,12 +33,6 @@ const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function Reports() {
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalExpected: 0,
-    totalCollected: 0,
-    totalPending: 0,
-  });
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [paymentModeData, setPaymentModeData] = useState<any[]>([]);
   const [classData, setClassData] = useState<any[]>([]);
@@ -69,56 +63,6 @@ export default function Reports() {
         const payments = paymentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }) as Payment);
 
         setAllData({ students, admissions, payments });
-
-        // Basic Stats
-        const totalExpected = admissions.reduce((sum, a) => sum + a.totalFee, 0);
-        const totalCollected = payments.reduce((sum, p) => sum + p.amount, 0);
-        
-        setStats({
-          totalStudents: students.length,
-          totalExpected,
-          totalCollected,
-          totalPending: totalExpected - totalCollected
-        });
-
-        // Monthly Data (Last 6 months)
-        const last6Months = eachMonthOfInterval({
-          start: subMonths(new Date(), 5),
-          end: new Date()
-        });
-
-        const monthlyStats = last6Months.map(month => {
-          const start = startOfMonth(month);
-          const end = endOfMonth(month);
-          
-          const collected = payments.filter(p => {
-            const date = new Date(p.date);
-            return isWithinInterval(date, { start, end });
-          }).reduce((sum, p) => sum + p.amount, 0);
-
-          return {
-            name: format(month, 'MMM'),
-            amount: collected
-          };
-        });
-        setMonthlyData(monthlyStats);
-
-        // Payment Mode Data
-        const modes = ['Cash', 'Online'];
-        const modeStats = modes.map(mode => ({
-          name: mode,
-          value: payments.filter(p => p.paymentMode === mode).reduce((sum, p) => sum + p.amount, 0)
-        }));
-        setPaymentModeData(modeStats);
-
-        // Class Data
-        const classes = ['Play Group', 'Nursery', 'LKG', 'UKG'];
-        const classStats = classes.map(cls => ({
-          name: cls,
-          students: students.filter(s => s.class === cls).length
-        }));
-        setClassData(classStats);
-
       } catch (error) {
         console.error('Error fetching report data:', error);
       } finally {
@@ -132,33 +76,75 @@ export default function Reports() {
   useEffect(() => {
     if (allData.students.length === 0) return;
 
-    if (selectedClass === 'All Classes') {
-      setClassFinancials({
-        totalExpected: stats.totalExpected,
-        totalCollected: stats.totalCollected,
-        totalPending: stats.totalPending,
-        studentCount: stats.totalStudents
-      });
-    } else {
-      const classStudents = allData.students.filter(s => s.class === selectedClass);
-      const studentIds = classStudents.map(s => s.id);
-      
-      const classAdmissions = allData.admissions.filter(a => studentIds.includes(a.studentId));
-      const admissionIds = classAdmissions.map(a => a.id);
-      
-      const classPayments = allData.payments.filter(p => admissionIds.includes(p.admissionId));
-      
-      const totalExpected = classAdmissions.reduce((sum, a) => sum + a.totalFee, 0);
-      const totalCollected = classPayments.reduce((sum, p) => sum + p.amount, 0);
-      
-      setClassFinancials({
-        totalExpected,
-        totalCollected,
-        totalPending: totalExpected - totalCollected,
-        studentCount: classStudents.length
-      });
+    let filteredStudents = allData.students;
+    let filteredAdmissions = allData.admissions;
+    let filteredPayments = allData.payments;
+
+    if (selectedClass !== 'All Classes') {
+      filteredStudents = allData.students.filter(s => s.class === selectedClass);
+      const studentIds = filteredStudents.map(s => s.id);
+      filteredAdmissions = allData.admissions.filter(a => studentIds.includes(a.studentId));
+      const admissionIds = filteredAdmissions.map(a => a.id);
+      filteredPayments = allData.payments.filter(p => admissionIds.includes(p.admissionId));
     }
-  }, [selectedClass, allData, stats]);
+
+    // Update KPIs
+    const totalExpected = filteredAdmissions.reduce((sum, a) => sum + a.totalFee, 0);
+    const totalCollected = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
+    
+    setClassFinancials({
+      totalExpected,
+      totalCollected,
+      totalPending: totalExpected - totalCollected,
+      studentCount: filteredStudents.length
+    });
+
+    // Update Monthly Data
+    const last6Months = eachMonthOfInterval({
+      start: subMonths(new Date(), 5),
+      end: new Date()
+    });
+
+    const monthlyStats = last6Months.map(month => {
+      const start = startOfMonth(month);
+      const end = endOfMonth(month);
+      
+      const collected = filteredPayments.filter(p => {
+        const date = new Date(p.date);
+        return isWithinInterval(date, { start, end });
+      }).reduce((sum, p) => sum + p.amount, 0);
+
+      return {
+        name: format(month, 'MMM'),
+        amount: collected
+      };
+    });
+    setMonthlyData(monthlyStats);
+
+    // Update Payment Mode Data
+    const modes = ['Cash', 'Online'];
+    const modeStats = modes.map(mode => ({
+      name: mode,
+      value: filteredPayments.filter(p => p.paymentMode === mode).reduce((sum, p) => sum + p.amount, 0)
+    }));
+    setPaymentModeData(modeStats);
+
+    // Update Class Data (Enrollment)
+    // We keep showing all classes for comparison, but we could also filter it if needed.
+    // However, the user specifically said "graphs are not updating", 
+    // and usually enrollment distribution is a global view.
+    // But if they filter by class, maybe they want to see the enrollment for that class only?
+    // Let's keep it showing all classes but maybe the user expects the bar chart to also reflect the filter?
+    // If I filter by "Nursery", the bar chart showing "Play Group", "Nursery", etc. is still useful for context.
+    // But let's see if the user meant ALL graphs.
+    const classes = ['Play Group', 'Nursery', 'LKG', 'UKG'];
+    const classStats = classes.map(cls => ({
+      name: cls,
+      students: allData.students.filter(s => s.class === cls).length
+    }));
+    setClassData(classStats);
+
+  }, [selectedClass, allData]);
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
